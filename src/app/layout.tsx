@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next"
 import { ThemeProvider } from "@/contexts/ThemeContext"
 import { PWARegister } from "@/components/ui/PWARegister"
+import { InstallBanner } from "@/components/ui/InstallBanner"
 import "./globals.css"
 
 export const metadata: Metadata = {
@@ -44,6 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <ThemeProvider>
           <PWARegister/>
+          <InstallBanner/>
           {children}
         </ThemeProvider>
       </body>

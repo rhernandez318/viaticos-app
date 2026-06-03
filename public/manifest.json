@@ -1,14 +1,16 @@
 {
   "name": "Viáticos Grupo Zapata",
   "short_name": "Viáticos GZ",
-  "description": "Sistema de gestión de viáticos y gastos",
+  "description": "Sistema de gestión de viáticos y gastos corporativos",
   "start_url": "/dashboard",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
   "background_color": "#0d0d0d",
   "theme_color": "#0d0d0d",
-  "orientation": "portrait-primary",
+  "lang": "es-MX",
+  "dir": "ltr",
+  "categories": ["business", "finance", "productivity"],
   "prefer_related_applications": false,
   "icons": [
     {
@@ -24,21 +26,17 @@
       "purpose": "any"
     },
     {
-      "src": "/icon-512.png",
+      "src": "/icon-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-512-maskable.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
     }
-  ],
-  "screenshots": [
-    {
-      "src": "/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "form_factor": "narrow"
-    }
-  ],
-  "categories": ["finance", "business"],
-  "lang": "es-MX"
+  ]
 }
 
