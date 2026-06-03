@@ -1,3 +1,8 @@
+#!/bin/bash
+set -e
+
+mkdir -p $(dirname 'src/app/(auth)/login/page.tsx')
+cat > 'src/app/(auth)/login/page.tsx' << 'FILEEOF'
 "use client"
 import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
@@ -111,3 +116,108 @@ export default function LoginPage() {
   )
 }
 
+FILEEOF
+
+mkdir -p $(dirname 'src/components/ui/PWARegister.tsx')
+cat > 'src/components/ui/PWARegister.tsx' << 'FILEEOF'
+"use client"
+import { useEffect } from "react"
+
+export function PWARegister() {
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    if (!("serviceWorker" in navigator)) {
+      console.log("[PWA] Service workers not supported")
+      return
+    }
+
+    // Register SW on page load
+    const register = async () => {
+      try {
+        const reg = await navigator.serviceWorker.register("/sw.js", {
+          scope: "/",
+          updateViaCache: "none",
+        })
+        console.log("[PWA] SW registered ✓ scope:", reg.scope)
+
+        // Check for updates
+        reg.addEventListener("updatefound", () => {
+          const newSW = reg.installing
+          newSW?.addEventListener("statechange", () => {
+            if (newSW.state === "installed" && navigator.serviceWorker.controller) {
+              console.log("[PWA] New SW installed, ready")
+            }
+          })
+        })
+      } catch (err) {
+        console.error("[PWA] SW registration failed:", err)
+      }
+    }
+
+    if (document.readyState === "complete") {
+      register()
+    } else {
+      window.addEventListener("load", register)
+    }
+  }, [])
+
+  return null
+}
+
+FILEEOF
+
+mkdir -p $(dirname 'src/app/layout.tsx')
+cat > 'src/app/layout.tsx' << 'FILEEOF'
+import type { Metadata, Viewport } from "next"
+import { ThemeProvider } from "@/contexts/ThemeContext"
+import { InstallBanner } from "@/components/ui/InstallBanner"
+import { PWARegister } from "@/components/ui/PWARegister"
+import "./globals.css"
+
+export const metadata: Metadata = {
+  title: "Viáticos Grupo Zapata",
+  description: "Sistema de gestión de viáticos y gastos corporativos",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Viáticos GZ",
+  },
+  icons: { icon: "/icon-192.png", apple: "/icon-512.png" },
+}
+
+export const viewport: Viewport = {
+  themeColor: "#0d0d0d",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+}
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="es" suppressHydrationWarning>
+      <head>
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="Viáticos GZ" />
+        <link rel="apple-touch-icon" href="/icon-512.png" />
+      </head>
+      <body>
+        <ThemeProvider>
+          <PWARegister />
+          <InstallBanner />
+          {children}
+        </ThemeProvider>
+      </body>
+    </html>
+  )
+}
+
+FILEEOF
+
+git add .
+git commit -m "fix: install button on login page, clean PWA setup"
+git push
+echo "✓ Done"
