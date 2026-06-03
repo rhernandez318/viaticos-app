@@ -122,3 +122,4 @@ export default function AppShell({ user, children }: { user: any; children: Reac
     </div>
   )
 }
+

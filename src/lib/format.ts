@@ -35,3 +35,4 @@ export const getBancosAccount = (division: string): string => {
   if (division === "4106") return "1110100002"
   return "1110100001"
 }
+

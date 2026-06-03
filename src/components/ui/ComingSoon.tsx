@@ -52,3 +52,4 @@ export function ComingSoon({ title }: { title: string }) {
     </div>
   )
 }
+

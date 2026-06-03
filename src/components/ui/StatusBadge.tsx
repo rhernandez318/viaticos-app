@@ -13,3 +13,4 @@ export function TipoBadge({ tipo }: { tipo: string }) {
   const map: Record<string, string> = { anticipo: "ANT", comprobacion: "CMP", reembolso: "REE" }
   return <span className="badge tipo">{map[tipo] ?? tipo}</span>
 }
+

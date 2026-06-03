@@ -32,3 +32,4 @@ export const findCuenta = (cuenta?: string | null): CuentaContable | undefined =
 
 export const findUserByEmail = (email: string): Usuario | undefined =>
   catalogos.usuarios.find((u) => u.correo?.toLowerCase() === email.toLowerCase())
+

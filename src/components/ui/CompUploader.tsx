@@ -94,3 +94,4 @@ export function CompUploader({ solicitudId, catalogoGastos, onAdd }: Props) {
     </div>
   )
 }
+

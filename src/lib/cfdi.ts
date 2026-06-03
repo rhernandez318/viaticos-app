@@ -92,3 +92,4 @@ export function parseCFDIXml(xmlText: string): CfdItem | null {
     return null
   }
 }
+

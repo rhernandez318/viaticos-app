@@ -38,3 +38,4 @@ export function Stepper({ status, dates }: { status: SolicitudStatus; dates?: Re
     </div>
   )
 }
+

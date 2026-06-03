@@ -105,3 +105,4 @@ export interface PolizaLinea {
   ref: string
   _archivos?: Array<{ nombre: string; url: string | null; uuid: string | null; emisor?: string | null; total?: number }>
 }
+

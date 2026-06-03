@@ -18,3 +18,4 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return <AppShell user={perfil}>{children}</AppShell>
 }
+
