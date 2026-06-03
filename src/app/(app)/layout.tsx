@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import AppShell from "@/components/layout/AppShell"
+import { InstallBanner } from "@/components/ui/InstallBanner"
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const sb = await createClient()
@@ -16,6 +17,6 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   if (!perfil) redirect("/login")
 
-  return <AppShell user={perfil}>{children}</AppShell>
+  return <AppShell user={perfil}>{children}<InstallBanner/></AppShell>
 }
 
