@@ -1,0 +1,11 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "mx.zapata.viaticos",
+    "sha256_cert_fingerprints": [
+      "60:2C:6F:41:CD:00:2D:84:08:E6:C8:CC:32:37:51:1A:79:D5:40:7F:38:E4:5B:8E:FC:8A:D9:26:3D:C9:6F:EE"
+    ]
+  }
+}]
+
