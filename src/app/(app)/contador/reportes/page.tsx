@@ -1,5 +1,4 @@
-import { ComingSoon } from "@/components/ui/ComingSoon"
-export default function Page() {
-  return <ComingSoon title="Reportes" />
-}
+"use client"
+import ReportesPage from "@/components/ReportesPage"
+export default function Page() { return <ReportesPage /> }
 
