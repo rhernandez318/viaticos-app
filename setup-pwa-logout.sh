@@ -1,3 +1,67 @@
+#!/bin/bash
+set -e
+
+mkdir -p $(dirname 'src/app/layout.tsx')
+cat > 'src/app/layout.tsx' << 'FILEEOF'
+import type { Metadata, Viewport } from "next"
+import { ThemeProvider } from "@/contexts/ThemeContext"
+import { InstallBanner } from "@/components/ui/InstallBanner"
+import "./globals.css"
+
+export const metadata: Metadata = {
+  title: "Viáticos Grupo Zapata",
+  description: "Sistema de gestión de viáticos y gastos corporativos",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Viáticos GZ",
+  },
+  icons: { icon: "/icon-192.png", apple: "/icon-512.png" },
+}
+
+export const viewport: Viewport = {
+  themeColor: "#0d0d0d",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+}
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="es" suppressHydrationWarning>
+      <head>
+        <meta name="mobile-web-app-capable" content="yes"/>
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+        <meta name="apple-mobile-web-app-title" content="Viáticos GZ"/>
+        <link rel="apple-touch-icon" href="/icon-512.png"/>
+        {/* Register SW before React hydration for faster PWA detection */}
+        <script dangerouslySetInnerHTML={{ __html: `
+          if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+              navigator.serviceWorker.register('/sw.js', { scope: '/' })
+                .then(function(reg) { console.log('SW registered', reg.scope); })
+                .catch(function(err) { console.log('SW error', err); });
+            });
+          }
+        `}}/>
+      </head>
+      <body>
+        <ThemeProvider>
+          <InstallBanner/>
+          {children}
+        </ThemeProvider>
+      </body>
+    </html>
+  )
+}
+
+FILEEOF
+
+mkdir -p $(dirname 'src/components/layout/AppShell.tsx')
+cat > 'src/components/layout/AppShell.tsx' << 'FILEEOF'
 "use client"
 
 import { usePathname } from "next/navigation"
@@ -201,3 +265,71 @@ export default function AppShell({ user, children }: { user: any; children: Reac
   )
 }
 
+FILEEOF
+
+mkdir -p $(dirname 'public/manifest.json')
+cat > 'public/manifest.json' << 'FILEEOF'
+{
+  "name": "Viáticos Grupo Zapata",
+  "short_name": "Viáticos GZ",
+  "description": "Sistema de gestión de viáticos y gastos corporativos",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0d0d0d",
+  "theme_color": "#0d0d0d",
+  "lang": "es-MX",
+  "dir": "ltr",
+  "categories": ["business", "finance", "productivity"],
+  "prefer_related_applications": false,
+  "icons": [
+    { "src": "/icon-192.png",          "sizes": "192x192", "type": "image/png", "purpose": "any"      },
+    { "src": "/icon-512.png",          "sizes": "512x512", "type": "image/png", "purpose": "any"      },
+    { "src": "/icon-192-maskable.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
+
+FILEEOF
+
+mkdir -p $(dirname 'next.config.ts')
+cat > 'next.config.ts' << 'FILEEOF'
+import type { NextConfig } from "next"
+
+const nextConfig: NextConfig = {
+  async headers() {
+    return [
+      {
+        source: "/.well-known/assetlinks.json",
+        headers: [{ key: "Content-Type", value: "application/json" }],
+      },
+      {
+        source: "/sw.js",
+        headers: [
+          { key: "Content-Type",  value: "application/javascript" },
+          { key: "Cache-Control", value: "no-cache, no-store, must-revalidate" },
+          { key: "Service-Worker-Allowed", value: "/" },
+        ],
+      },
+      {
+        source: "/manifest.json",
+        headers: [{ key: "Content-Type", value: "application/manifest+json" }],
+      },
+    ]
+  },
+}
+
+export default nextConfig
+
+FILEEOF
+
+git add .
+git commit -m "fix: PWA start_url, SW headers, logout button web+mobile"
+git push
+echo ""
+echo "✓ Deployed! After Vercel finishes (~2min):"
+echo "  1. Open Chrome on Android → visit the site"
+echo "  2. Chrome menu (3 dots) → Add to Home Screen"
+echo "  3. Should show Install (not just Create shortcut)"
+echo "  4. Also test: logout button in sidebar (web) and Cuenta tab (mobile)"
