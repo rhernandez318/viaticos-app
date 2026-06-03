@@ -7,98 +7,122 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>
 }
 
+// Store prompt globally so it survives re-renders
+let deferredPrompt: BeforeInstallPromptEvent | null = null
+
 export function InstallBanner() {
-  const [prompt, setPrompt] = useState<BeforeInstallPromptEvent | null>(null)
+  const [canInstall, setCanInstall] = useState(false)
   const [visible, setVisible] = useState(false)
   const [installed, setInstalled] = useState(false)
 
   useEffect(() => {
-    // Already installed as standalone? Hide banner
+    // Already running as standalone (installed)?
     if (window.matchMedia("(display-mode: standalone)").matches) {
       setInstalled(true)
       return
     }
 
-    // Dismissed before? Respect it for 3 days
-    const dismissed = localStorage.getItem("pwa-install-dismissed")
-    if (dismissed && Date.now() - parseInt(dismissed) < 3 * 24 * 60 * 60 * 1000) return
+    // Previously dismissed within 7 days?
+    const dismissed = localStorage.getItem("pwa-dismissed")
+    const tooRecent = dismissed && Date.now() - parseInt(dismissed) < 7 * 86400000
 
-    const handler = (e: Event) => {
+    const handlePrompt = (e: Event) => {
       e.preventDefault()
-      setPrompt(e as BeforeInstallPromptEvent)
-      // Small delay so it doesn't pop immediately on first visit
-      setTimeout(() => setVisible(true), 3000)
+      deferredPrompt = e as BeforeInstallPromptEvent
+      setCanInstall(true)
+      if (!tooRecent) {
+        setTimeout(() => setVisible(true), 2000)
+      }
     }
 
-    window.addEventListener("beforeinstallprompt", handler)
-    return () => window.removeEventListener("beforeinstallprompt", handler)
+    window.addEventListener("beforeinstallprompt", handlePrompt)
+
+    // Listen for successful install
+    window.addEventListener("appinstalled", () => {
+      setInstalled(true)
+      setVisible(false)
+      deferredPrompt = null
+    })
+
+    return () => window.removeEventListener("beforeinstallprompt", handlePrompt)
   }, [])
 
   const install = async () => {
-    if (!prompt) return
-    await prompt.prompt()
-    const { outcome } = await prompt.userChoice
+    if (!deferredPrompt) return
+    await deferredPrompt.prompt()
+    const { outcome } = await deferredPrompt.userChoice
     if (outcome === "accepted") {
       setVisible(false)
       setInstalled(true)
     } else {
       dismiss()
     }
+    deferredPrompt = null
+    setCanInstall(false)
   }
 
   const dismiss = () => {
     setVisible(false)
-    localStorage.setItem("pwa-install-dismissed", String(Date.now()))
+    localStorage.setItem("pwa-dismissed", String(Date.now()))
   }
 
-  if (!visible || installed) return null
+  if (installed || !visible) return null
 
   return (
-    <div style={{
-      position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 200,
-      background: "var(--surface)",
-      borderTop: "1px solid var(--border)",
-      padding: "16px 20px 24px",
-      borderRadius: "20px 20px 0 0",
-      boxShadow: "0 -8px 32px rgba(0,0,0,.4)",
-      animation: "slideUp .3s ease-out",
-    }}>
-      {/* Drag handle */}
-      <div style={{ width: 36, height: 4, borderRadius: 2, background: "var(--border)",
-        margin: "0 auto 16px" }}/>
-
-      <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 16 }}>
-        <div style={{ width: 52, height: 52, borderRadius: 14, overflow: "hidden",
-          background: "white", padding: 4, flexShrink: 0,
-          boxShadow: "0 2px 8px rgba(0,0,0,.2)" }}>
-          <Image src="/logo.png" alt="Viáticos GZ" width={44} height={44}
-            style={{ width: "100%", height: "100%", objectFit: "contain" }}/>
-        </div>
-        <div>
-          <div style={{ fontWeight: 700, fontSize: 15 }}>Viáticos Grupo Zapata</div>
-          <div style={{ fontSize: 12, color: "var(--text-3)", marginTop: 2 }}>
-            viaticos-app-bice.vercel.app
-          </div>
-        </div>
-        <button onClick={dismiss}
-          style={{ marginLeft: "auto", background: "none", border: "none",
-            color: "var(--text-3)", cursor: "pointer", fontSize: 20, padding: 4 }}>
-          ×
-        </button>
-      </div>
-
-      <button onClick={install} style={{
-        width: "100%", padding: "14px", borderRadius: 12,
-        background: "var(--accent)", border: "none", color: "#111",
-        fontSize: 15, fontWeight: 700, cursor: "pointer",
-        display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+    <>
+      {/* Backdrop */}
+      <div style={{ position:"fixed", inset:0, zIndex:199, background:"rgba(0,0,0,.4)" }}
+        onClick={dismiss}/>
+      {/* Sheet */}
+      <div style={{
+        position:"fixed", bottom:0, left:0, right:0, zIndex:200,
+        background:"var(--surface)", borderTop:"1px solid var(--border)",
+        borderRadius:"20px 20px 0 0",
+        padding:"16px 24px 32px",
+        boxShadow:"0 -8px 40px rgba(0,0,0,.5)",
+        animation:"slideUp .3s cubic-bezier(.32,.72,0,1)",
       }}>
-        ⬇️ Instalar aplicación
-      </button>
-      <div style={{ textAlign: "center", fontSize: 11, color: "var(--text-3)", marginTop: 8 }}>
-        Se instala sin ocupar espacio adicional
+        <div style={{ width:40, height:4, borderRadius:2, background:"var(--border)", margin:"0 auto 20px" }}/>
+
+        <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:20 }}>
+          <div style={{ width:60, height:60, borderRadius:16, overflow:"hidden",
+            background:"white", padding:4, flexShrink:0,
+            boxShadow:"0 4px 16px rgba(0,0,0,.2)" }}>
+            <Image src="/logo.png" alt="Viáticos GZ" width={52} height={52}
+              style={{ width:"100%", height:"100%", objectFit:"contain" }}/>
+          </div>
+          <div>
+            <div style={{ fontWeight:700, fontSize:17, marginBottom:2 }}>Viáticos Grupo Zapata</div>
+            <div style={{ fontSize:13, color:"var(--text-3)" }}>
+              Instala la app para acceso rápido
+            </div>
+          </div>
+          <button onClick={dismiss}
+            style={{ marginLeft:"auto", background:"none", border:"none",
+              color:"var(--text-3)", cursor:"pointer", fontSize:22, padding:4, lineHeight:1 }}>
+            ×
+          </button>
+        </div>
+
+        <button onClick={install}
+          style={{
+            width:"100%", padding:"15px", borderRadius:14,
+            background:"var(--accent)", border:"none", color:"#111",
+            fontSize:16, fontWeight:700, cursor:"pointer",
+            display:"flex", alignItems:"center", justifyContent:"center", gap:10,
+          }}>
+          ⬇️ Instalar aplicación
+        </button>
+        <div style={{ textAlign:"center", fontSize:12, color:"var(--text-3)", marginTop:10 }}>
+          Sin ocupar espacio adicional · Funciona sin conexión
+        </div>
       </div>
-    </div>
+    </>
   )
+}
+
+// Exportar función para trigger manual (desde un botón en el UI)
+export function triggerInstall() {
+  if (deferredPrompt) deferredPrompt.prompt()
 }
 
