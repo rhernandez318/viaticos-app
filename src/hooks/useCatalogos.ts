@@ -87,3 +87,6 @@ export function useSolicitudes(userId?: string, rol?: string) {
 
   return { solicitudes, loading }
 }
+
+// Re-export finders for convenience
+export { findUser, findCentro, findCuenta } from "@/store/catalogos"

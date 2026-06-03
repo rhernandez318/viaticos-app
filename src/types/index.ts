@@ -49,8 +49,8 @@ export interface CfdItem {
   archivoUrl: string | null
   archivoPdfUrl?: string | null
   archivoXmlUrl?: string | null
-  rfcEmisor: string | null
-  rfcReceptor: string | null
+  rfcEmisor?: string | null
+  rfcReceptor?: string | null
   satEstado?: string | null
   duplicado?: boolean
   motivoDup?: string
