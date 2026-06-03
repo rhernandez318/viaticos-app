@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next"
-import Script from "next/script"
 import { ThemeProvider } from "@/contexts/ThemeContext"
 import { InstallBanner } from "@/components/ui/InstallBanner"
+import { PWARegister } from "@/components/ui/PWARegister"
 import "./globals.css"
 
 export const metadata: Metadata = {
@@ -36,25 +36,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <ThemeProvider>
+          <PWARegister />
           <InstallBanner />
           {children}
         </ThemeProvider>
-        {/* Service Worker registration — must use next/script, NOT dangerouslySetInnerHTML */}
-        <Script id="sw-register" strategy="afterInteractive">
-          {`
-            if ('serviceWorker' in navigator) {
-              window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/sw.js', { scope: '/' })
-                  .then(function(reg) {
-                    console.log('[PWA] Service Worker registered, scope:', reg.scope);
-                  })
-                  .catch(function(err) {
-                    console.warn('[PWA] Service Worker failed:', err);
-                  });
-              });
-            }
-          `}
-        </Script>
       </body>
     </html>
   )
