@@ -42,8 +42,10 @@ export default function DashboardPage() {
           .limit(500),
         sb.from("usuarios").select("id,nombre,iniciales,rol"),
       ])
+      // usuario: own only | gerente/admin/tesoreria/contador: all
+      const ownOnly = rol === "usuario"
       setSolicitudes(
-        rol === "usuario"
+        ownOnly
           ? (solRes.data||[]).filter((s:any) => s.usuario_id === user.id)
           : (solRes.data||[])
       )

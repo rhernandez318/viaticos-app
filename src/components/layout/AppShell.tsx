@@ -30,14 +30,16 @@ const NAV_BY_ROL: Record<string, NavItem[]> = {
     { id:"perfil",       label:"Mi perfil",           icon:"⚙️", href:"/perfil" },
   ],
   tesoreria: [
-    { id:"liberar",  label:"Liberar pagos", icon:"💵", href:"/tesoreria" },
+    { id:"workflow",  label:"Workflow",      icon:"🗂", href:"/dashboard" },
+    { id:"liberar",   label:"Liberar pagos", icon:"💵", href:"/tesoreria" },
     { id:"pagados",  label:"Pagados",        icon:"✅", href:"/tesoreria/pagados" },
     { id:"deudores", label:"Deudores",       icon:"⚑",  href:"/tesoreria/deudores" },
     { id:"reportes", label:"Reportes",       icon:"📊", href:"/tesoreria/reportes" },
     { id:"perfil",   label:"Mi perfil",      icon:"⚙️", href:"/perfil" },
   ],
   contador: [
-    { id:"polizas",          label:"Pólizas contables", icon:"📒", href:"/contador/polizas" },
+    { id:"workflow",         label:"Workflow",           icon:"🗂", href:"/dashboard" },
+    { id:"polizas",          label:"Pólizas contables",  icon:"📒", href:"/contador/polizas" },
     { id:"trazabilidad",     label:"Trazabilidad",       icon:"🔍", href:"/contador/trazabilidad" },
     { id:"validacion-sat",   label:"Validación SAT",     icon:"🛡", href:"/contador/validacion-sat" },
     { id:"conciliacion-sat", label:"Conciliación SAT",   icon:"📊", href:"/contador/conciliacion-sat" },
