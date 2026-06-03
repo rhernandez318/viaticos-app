@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../../src/app/%28app%29/contador/reportes/page.tsx"],"sourcesContent":["\"use client\"\nimport ReportesPage from \"@/components/ReportesPage\"\nexport default function Page() { return <ReportesPage /> }\n\n"],"names":["Page"],"mappings":"wDACA,EAAA,EAAA,CAAA,CAAA,wBACe,SAASA,EAAS,MAAO,CAAA,EAAA,EAAA,GAAA,EAAC,EAAA,OAAY,CAAA,CAAA,EAAI"}

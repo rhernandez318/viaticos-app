@@ -6,6 +6,7 @@ import Image from "next/image"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { ThemePanel } from "@/components/ui/ThemePanel"
+import { NotificationBell } from "@/components/ui/NotificationBell"
 import { useState } from "react"
 
 interface NavItem { id: string; label: string; icon: string; href: string }
@@ -162,10 +163,10 @@ export default function AppShell({ user, children }: { user: any; children: Reac
             {/* Nav items */}
             <div style={{ display:"flex", flexDirection:"column", gap:4, marginBottom:12 }}>
               {[
-                { label:"Mi perfil", icon:"⚙️", href:"/perfil" },
+                { id:"perfil", label:"Mi perfil", icon:"⚙️", href:"/perfil" } as NavItem,
                 ...navItems.slice(4).filter(i => i.id !== "perfil"),
               ].map(item => (
-                <Link key={item.id || item.label} href={(item as any).href}
+                <Link key={item.id} href={item.href}
                   onClick={() => setShowUserMenu(false)}
                   style={{ display:"flex", alignItems:"center", gap:12, padding:"10px 12px",
                     borderRadius:10, color:"var(--text)", textDecoration:"none",
@@ -190,6 +191,7 @@ export default function AppShell({ user, children }: { user: any; children: Reac
       {/* ── Top bar (web + mobile) ─────────────────────────── */}
       <div style={{ position:"fixed", top:16, right:20, zIndex:40,
         display:"flex", gap:8, alignItems:"center" }}>
+        <NotificationBell userId={user.id}/>
         <ThemePanel/>
       </div>
 

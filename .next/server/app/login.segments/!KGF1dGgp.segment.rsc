@@ -1,0 +1,6 @@
+1:"$Sreact.fragment"
+2:I[39756,["/_next/static/chunks/3gyguwx1yjji4.js","/_next/static/chunks/1-8s9_t85wwr4.js"],"default"]
+3:I[37457,["/_next/static/chunks/3gyguwx1yjji4.js","/_next/static/chunks/1-8s9_t85wwr4.js"],"default"]
+4:I[22016,["/_next/static/chunks/3gyguwx1yjji4.js","/_next/static/chunks/1-8s9_t85wwr4.js","/_next/static/chunks/0d7z5o1bxadqd.js"],""]
+5:[]
+0:{"rsc":["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","template":["$","$L3",null,{}],"notFound":[["$","div",null,{"style":{"minHeight":"100vh","display":"grid","placeItems":"center","background":"var(--bg)"},"children":["$","div",null,{"style":{"textAlign":"center","padding":"0 20px"},"children":[["$","div",null,{"style":{"fontSize":64,"marginBottom":16},"children":"🚧"}],["$","h1",null,{"style":{"fontSize":22,"fontWeight":700,"marginBottom":8},"children":"Página en construcción"}],["$","p",null,{"style":{"color":"var(--text-3)","fontSize":14,"marginBottom":24},"children":"Esta sección se está migrando a la nueva versión."}],["$","$L4",null,{"href":"/dashboard","className":"btn primary","children":"← Volver al inicio"}]]}]}],[]]}]]}],"isPartial":false,"staleTime":300,"varyParams":"$W5","buildId":"gCBeksamZ367HpGuLtpcr"}
