@@ -62,6 +62,8 @@ function NuevaComprobacionInner() {
     if (!anticipoSel)              { showToast("⚠ Selecciona el anticipo a comprobar", false); return }
     if (itemsValidos.length === 0) { showToast("⚠ Agrega al menos un comprobante XML válido", false); return }
     if (total <= 0)                { showToast("⚠ El total es cero", false); return }
+    const sinCom = itemsValidos.filter(it => it.cuenta === "6122200001" && !(it as any).observaciones?.trim())
+    if (sinCom.length > 0) { showToast("⚠ Indica número y nombre de comensales en gastos de alimentos", false); return }
 
     setEnviando(true)
     const sb = createClient()
@@ -166,12 +168,17 @@ function NuevaComprobacionInner() {
 
       {/* Items list */}
       {items.length > 0 && (
-        <div className="card" style={{ marginBottom: 16, padding: 0, overflow: "hidden" }}>
-          <table className="t">
+        <div className="card" style={{ marginBottom: 16, padding: 0, overflow: "auto" }}>
+          <table className="t" style={{ minWidth: 960 }}>
             <thead>
               <tr>
-                <th>UUID</th><th>Emisor</th><th>Concepto</th>
-                <th style={{ minWidth: 220 }}>Cuenta</th><th className="num">Total</th><th></th>
+                <th style={{ minWidth: 100 }}>UUID</th>
+                <th style={{ minWidth: 120 }}>Emisor</th>
+                <th style={{ minWidth: 140 }}>Concepto</th>
+                <th style={{ minWidth: 220 }}>Cuenta</th>
+                <th style={{ minWidth: 220 }}>Comentarios</th>
+                <th className="num" style={{ minWidth: 90 }}>Total</th>
+                <th style={{ width: 32 }}></th>
               </tr>
             </thead>
             <tbody>
@@ -200,6 +207,26 @@ function NuevaComprobacionInner() {
                         {catalogoGastos.map(g => <option key={g.cuenta} value={g.cuenta}>{g.cuenta} · {g.nombre}</option>)}
                       </select>
                     )}
+                  </td>
+                  <td>
+                    <div>
+                      <input
+                        className="input"
+                        value={(it as any).observaciones || ""}
+                        onChange={e => setItems(prev => prev.map((x,j) => j===i ? {...x, observaciones: e.target.value} : x))}
+                        placeholder={it.cuenta === "6122200001" ? "Requerido: nombres y número de comensales" : "Opcional"}
+                        style={{
+                          fontSize:11, padding:"5px 6px",
+                          borderColor: it.cuenta === "6122200001" && !(it as any).observaciones ? "var(--danger)" : "var(--border)",
+                          background: it.cuenta === "6122200001" && !(it as any).observaciones ? "var(--danger-soft)" : "var(--surface)",
+                        }}
+                      />
+                      {it.cuenta === "6122200001" && !(it as any).observaciones && (
+                        <div style={{fontSize:10,color:"var(--danger)",marginTop:2}}>
+                          ⚠ Favor de indicar número y nombre de los comensales
+                        </div>
+                      )}
+                    </div>
                   </td>
                   <td className="num">{fmtMXN(it.total)}</td>
                   <td>

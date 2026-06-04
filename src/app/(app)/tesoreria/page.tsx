@@ -57,7 +57,8 @@ export default function TesoreriaLiberarPage() {
     for (const id of Array.from(selected)) {
       const s = solicitudes.find(x => x.id === id)
       if (!s) continue
-      const newStatus = s.tipo === "comprobacion" ? "comprobado" : "liberado"
+      // Comprobaciones sin anticipo ref van a comprobado; todo lo demás a liberado
+      const newStatus = (s.tipo === "comprobacion" && !s.anticipoRef) ? "comprobado" : "liberado"
       await sb.from("solicitudes").update({ status: newStatus }).eq("id", id)
       if (s.tipo === "comprobacion" && s.anticipoRef) {
         const { data: comps } = await sb.from("solicitudes")

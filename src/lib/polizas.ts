@@ -99,7 +99,7 @@ export function generarPolizas(
           const meta = findCuenta(it.cuenta) || { nombre: it.cuenta }
           lineas.push({ ...base, division, cuenta: it.cuenta, nombreCuenta: meta.nombre,
             tipo: "C", debe: it.monto, haber: 0,
-            concepto: it.desc || s.concepto, proveedor: u.nombre, usuario: u.nombre,
+            concepto: [it.desc || s.concepto, (it as any).observaciones].filter(Boolean).join(' — '), proveedor: u.nombre, usuario: u.nombre,
             ref: s.id, _archivos: archivos })
         })
 
