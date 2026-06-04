@@ -1,3 +1,7 @@
+#!/bin/bash
+set -e
+
+cat > 'src/components/layout/AppShell.tsx' << 'FILEEOF'
 "use client"
 
 import { usePathname } from "next/navigation"
@@ -223,3 +227,9 @@ export default function AppShell({ user, children }: { user: any; children: Reac
   )
 }
 
+FILEEOF
+
+git add .
+git commit -m "fix: add validar and limites to admin nav"
+git push
+echo "✓ Done"
