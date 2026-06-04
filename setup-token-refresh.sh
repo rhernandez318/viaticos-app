@@ -1,3 +1,7 @@
+#!/bin/bash
+set -e
+
+cat > 'src/components/ui/PushNotifications.tsx' << 'FILEEOF'
 "use client"
 import { useEffect, useState, useRef, useCallback } from "react"
 
@@ -183,3 +187,11 @@ export function PushNotifications({ userId }: Props) {
   )
 }
 
+FILEEOF
+
+git add .
+git commit -m "fix: always refresh FCM token on load to avoid UNREGISTERED errors"
+git push
+echo "✓ Done"
+echo ""
+echo "Tambien sube el viaticos-worker.js actualizado a Cloudflare"
