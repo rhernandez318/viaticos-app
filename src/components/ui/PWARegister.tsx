@@ -3,40 +3,24 @@ import { useEffect } from "react"
 
 export function PWARegister() {
   useEffect(() => {
-    if (typeof window === "undefined") return
+    console.log("[PWA] PWARegister mounted, checking SW support...")
+
     if (!("serviceWorker" in navigator)) {
-      console.log("[PWA] Service workers not supported")
+      console.log("[PWA] Service workers NOT supported in this browser")
       return
     }
 
-    // Register SW on page load
-    const register = async () => {
-      try {
-        const reg = await navigator.serviceWorker.register("/sw.js", {
-          scope: "/",
-          updateViaCache: "none",
-        })
-        console.log("[PWA] SW registered ✓ scope:", reg.scope)
+    console.log("[PWA] Registering service worker at /sw.js")
 
-        // Check for updates
-        reg.addEventListener("updatefound", () => {
-          const newSW = reg.installing
-          newSW?.addEventListener("statechange", () => {
-            if (newSW.state === "installed" && navigator.serviceWorker.controller) {
-              console.log("[PWA] New SW installed, ready")
-            }
-          })
-        })
-      } catch (err) {
-        console.error("[PWA] SW registration failed:", err)
-      }
-    }
-
-    if (document.readyState === "complete") {
-      register()
-    } else {
-      window.addEventListener("load", register)
-    }
+    navigator.serviceWorker
+      .register("/sw.js", { scope: "/", updateViaCache: "none" })
+      .then(reg => {
+        console.log("[PWA] ✓ Service Worker registered! Scope:", reg.scope)
+        console.log("[PWA] SW state:", reg.active?.state ?? reg.installing?.state ?? "pending")
+      })
+      .catch(err => {
+        console.error("[PWA] ✗ SW registration FAILED:", err.message, err)
+      })
   }, [])
 
   return null
