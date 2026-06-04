@@ -1,3 +1,8 @@
+#!/bin/bash
+set -e
+
+mkdir -p $(dirname 'src/components/ui/PushNotifications.tsx')
+cat > 'src/components/ui/PushNotifications.tsx' << 'FILEEOF'
 "use client"
 import { useEffect, useState } from "react"
 
@@ -95,3 +100,34 @@ export function PushNotifications({ userId }: Props) {
   )
 }
 
+FILEEOF
+
+mkdir -p $(dirname 'src/app/api/push/register/route.ts')
+cat > 'src/app/api/push/register/route.ts' << 'FILEEOF'
+import { NextRequest, NextResponse } from "next/server"
+import { createClient } from "@/lib/supabase/server"
+
+export async function POST(request: NextRequest) {
+  const sb = await createClient()
+  const { data: { user } } = await sb.auth.getUser()
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+
+  const { userId, token } = await request.json()
+  if (!token) return NextResponse.json({ error: "No token" }, { status: 400 })
+
+  const { error } = await sb.from("push_subscriptions").upsert(
+    { usuario_id: userId || user.id, subscription: token, updated_at: new Date().toISOString() },
+    { onConflict: "usuario_id" }
+  )
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ ok: true })
+}
+
+FILEEOF
+
+rm -f src/lib/firebase.ts
+git add .
+git commit -m "fix: load Firebase from CDN instead of bundle - fixes Turbopack"
+git push
+echo "✓ Done - Vercel should deploy now"
