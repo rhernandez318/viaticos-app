@@ -115,8 +115,14 @@ export default function TesoreriaLiberarPage() {
             )}
             <div style={{ fontWeight:600, fontSize:13, overflow:"hidden",
               textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{s.concepto}</div>
-            <div style={{ fontSize:11, color:"var(--text-3)", marginTop:2 }}>
-              {s.id} · {fmtFecha(s.fecha)}
+            <div style={{ display:"flex", gap:6, alignItems:"center", marginTop:2 }}>
+              <span style={{ fontSize:11, color:"var(--text-3)" }}>{s.id} · {fmtFecha(s.fecha)}</span>
+              {s.concepto?.includes("Saldo a favor") && (
+                <span style={{ fontSize:10, padding:"1px 7px", borderRadius:10, fontWeight:600,
+                  background:"var(--accent-soft)", color:"var(--accent)" }}>
+                  💰 Saldo a favor
+                </span>
+              )}
             </div>
           </div>
           <div style={{ fontWeight:700, fontSize:16, flexShrink:0 }}>
