@@ -14,7 +14,7 @@ export const config = {
      * - PWA files: sw.js, manifest.json, icons
      * - .well-known (assetlinks.json)
      */
-    "/((?!_next/static|_next/image|favicon\\.ico|sw\\.js|firebase-messaging-sw\\.js|manifest\\.json|icon.*\\.png|logo\\.png|\\.well-known|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!_next/static|_next/image|favicon\\.ico|sw\\.js|firebase-messaging-sw\\.js|manifest\\.json|icon.*\\.png|logo\\.png|\\.well-known|reset-password|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 }
 

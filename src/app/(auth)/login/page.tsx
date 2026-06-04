@@ -53,7 +53,7 @@ export default function LoginPage() {
     setLoading(true); setError(null)
     const sb = createClient()
     const { error } = await sb.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/dashboard`,
+      redirectTo: `${window.location.origin}/reset-password`,
     })
     if (error) { setError("Error al enviar: " + error.message); setLoading(false); return }
     setSent(true); setLoading(false)
