@@ -23,7 +23,7 @@ export default function TesoreriaLiberarPage() {
     const [solRes, usrRes] = await Promise.all([
       sb.from("solicitudes")
         .select("id, tipo, concepto, monto, fecha, status, usuario_id, saldo_pendiente, anticipo_ref")
-        .eq("status", "autorizado")
+        .eq("status", "validado")
         .order("fecha", { ascending: true }),
       sb.from("usuarios").select("id, nombre, iniciales"),
     ])

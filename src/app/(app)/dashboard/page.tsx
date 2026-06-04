@@ -5,11 +5,12 @@ import { createClient } from "@/lib/supabase/client"
 import { fmtMXN, fmtFecha } from "@/lib/format"
 import { StatusBadge, TipoBadge } from "@/components/ui/StatusBadge"
 
-type Status = "solicitado"|"autorizado"|"liberado"|"parcial"|"comprobado"|"rechazado"
+type Status = "solicitado"|"autorizado"|"validado"|"liberado"|"parcial"|"comprobado"|"rechazado"
 
 const STATUS_CONFIG: Record<Status,{label:string,icon:string,color:string,bg:string}> = {
-  solicitado:  { label:"Solicitados",    icon:"📨", color:"var(--warn)",    bg:"var(--warn-soft)"    },
-  autorizado:  { label:"Autorizados",    icon:"✅", color:"var(--accent)",  bg:"var(--accent-soft)"  },
+  solicitado:  { label:"Por aprobar",    icon:"📨", color:"var(--warn)",    bg:"var(--warn-soft)"    },
+  autorizado:  { label:"Aut. Gerente",   icon:"✅", color:"var(--accent)",  bg:"var(--accent-soft)"  },
+  validado:    { label:"Aut. Admin",     icon:"🔐", color:"#c084fc",        bg:"rgba(192,132,252,.12)"},
   liberado:    { label:"Liberados",      icon:"💵", color:"#60a5fa",        bg:"rgba(96,165,250,.12)"},
   parcial:     { label:"Parcial",        icon:"📎", color:"#f97316",        bg:"rgba(249,115,22,.12)"},
   comprobado:  { label:"Comprobados",    icon:"🏆", color:"var(--success)", bg:"var(--success-soft)" },
@@ -232,7 +233,12 @@ export default function DashboardPage() {
                                 Ir a bandeja
                               </button>
                             )}
-                            {s.status==="autorizado"&&(userRol==="tesoreria"||userRol==="admin")&&(
+                            {s.status==="autorizado"&&(userRol==="admin")&&(
+                              <button className="btn sm primary" onClick={()=>router.push("/admin/validar")}>
+                                Validar →
+                              </button>
+                            )}
+                            {s.status==="validado"&&(userRol==="tesoreria"||userRol==="admin")&&(
                               <button className="btn sm primary" onClick={()=>router.push("/tesoreria")}>
                                 Liberar pago
                               </button>

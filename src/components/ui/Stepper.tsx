@@ -4,13 +4,14 @@ import type { SolicitudStatus } from "@/types"
 
 const STEPS = [
   { key: "solicitado", label: "Solicitado" },
-  { key: "autorizado", label: "Autorizado" },
-  { key: "liberado",   label: "Liberado"   },
+  { key: "autorizado", label: "Aut. Gerente" },
+  { key: "validado",   label: "Aut. Admin" },
+  { key: "liberado",   label: "Liberado" },
   { key: "comprobado", label: "Comprobado" },
 ]
 
 const ORDER: Record<string, number> = {
-  solicitado: 0, autorizado: 1, liberado: 2, comprobado: 3, parcial: 2,
+  solicitado: 0, autorizado: 1, validado: 2, liberado: 3, comprobado: 4, parcial: 3,
 }
 
 export function Stepper({ status, dates }: { status: SolicitudStatus; dates?: Record<string, Date | null> }) {

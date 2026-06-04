@@ -1,8 +1,8 @@
 import type { SolicitudStatus } from "@/types"
 
 const LABELS: Record<string, string> = {
-  solicitado: "Solicitado", autorizado: "Autorizado", liberado: "Liberado",
-  comprobado: "Comprobado", rechazado: "Rechazado", parcial: "Parcial",
+  solicitado: "Solicitado", autorizado: "Aut. Gerente", validado: "Aut. Admin",
+  liberado: "Liberado", comprobado: "Comprobado", rechazado: "Rechazado", parcial: "Parcial",
 }
 
 export function StatusBadge({ status }: { status: SolicitudStatus }) {

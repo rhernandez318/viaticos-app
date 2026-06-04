@@ -136,7 +136,7 @@ export default function TodasSolicitudesPage() {
           {/* Status */}
           <select className="select" value={filtroStatus} onChange={e => setFiltroStatus(e.target.value)}>
             <option value="todos">Todos los status</option>
-            {["solicitado","autorizado","liberado","parcial","comprobado","rechazado"].map(s => (
+            {["solicitado","autorizado","validado","liberado","parcial","comprobado","rechazado"].map(s => (
               <option key={s} value={s} style={{ textTransform: "capitalize" }}>
                 {s.charAt(0).toUpperCase() + s.slice(1)}
               </option>

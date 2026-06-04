@@ -2,7 +2,7 @@
 
 export type Rol = "usuario" | "gerente" | "tesoreria" | "contador" | "admin"
 
-export type SolicitudStatus = "solicitado" | "autorizado" | "liberado" | "comprobado" | "rechazado" | "parcial"
+export type SolicitudStatus = "solicitado" | "autorizado" | "validado" | "liberado" | "comprobado" | "rechazado" | "parcial"
 
 export type SolicitudTipo = "anticipo" | "reembolso" | "comprobacion"
 
