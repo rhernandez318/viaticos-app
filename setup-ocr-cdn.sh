@@ -1,3 +1,7 @@
+#!/bin/bash
+set -e
+
+cat > 'src/components/ui/CompUploader.tsx' << 'FILEEOF'
 "use client"
 import { useRef, useCallback, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
@@ -193,3 +197,9 @@ export function CompUploader({ solicitudId, onAdd }: Props) {
   )
 }
 
+FILEEOF
+
+git add .
+git commit -m "fix: load Tesseract.js from CDN to avoid Turbopack bundle issue"
+git push
+echo "✓ Done"
