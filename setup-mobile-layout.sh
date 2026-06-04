@@ -1,3 +1,7 @@
+#!/bin/bash
+set -e
+
+cat > 'src/app/globals.css' << 'FILEEOF'
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -229,3 +233,9 @@ body {
   }
 }
 
+FILEEOF
+
+git add .
+git commit -m "fix: mobile layout - fixed topbar + correct content padding"
+git push
+echo "✓ Done"
