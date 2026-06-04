@@ -1,3 +1,7 @@
+#!/bin/bash
+set -e
+
+cat > 'src/middleware.ts' << 'FILEEOF'
 import { type NextRequest } from "next/server"
 import { updateSession } from "@/lib/supabase/middleware"
 
@@ -18,3 +22,11 @@ export const config = {
   ],
 }
 
+FILEEOF
+
+git add .
+git commit -m "fix: exclude sw.js and PWA files from auth middleware"
+git push
+echo "✓ Done! Verifica en 2 min:"
+echo "  https://viaticos-app-bice.vercel.app/sw.js"
+echo "  Debe mostrar codigo JS, no redirigir al login"
