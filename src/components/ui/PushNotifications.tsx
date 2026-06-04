@@ -1,14 +1,15 @@
 "use client"
 import { useEffect, useState, useRef, useCallback } from "react"
 
-const VAPID_KEY = process.env.NEXT_PUBLIC_FCM_VAPID_KEY || ""
+// Firebase public config - safe to hardcode (client-side values, not secrets)
+const VAPID_KEY = "BC4H1SRGR-megh4PQ-N4BpczTZkkZF3F8cfmS7bW1WL0Zp5rnfsN59Q7L9cKkUBaoo7NZ-2x0H_ja23MtUWinmQ"
 const FIREBASE_CONFIG = {
-  apiKey:            process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain:        `${process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID}.firebaseapp.com`,
-  projectId:         process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket:     `${process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID}.appspot.com`,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId:             process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  apiKey:            "AIzaSyD5WCpMWnQkwLJplAtbOXrjU2_5gwSRI2w",
+  authDomain:        "viaticos-zapata.firebaseapp.com",
+  projectId:         "viaticos-zapata",
+  storageBucket:     "viaticos-zapata.appspot.com",
+  messagingSenderId: "318139943193",
+  appId:             "1:318139943193:web:3fade17ff5c1e89a805d88",
 }
 
 interface Props { userId: string }

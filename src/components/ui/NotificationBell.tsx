@@ -42,30 +42,34 @@ export function NotificationBell({ userId }: { userId: string }) {
         .select("id, accion, detalle, ts, solicitud_id")
         .order("ts", { ascending: false })
         .limit(20)
-      if (bData) {
+      if (bData && bData.length > 0) {
         setNotifs(bData.map((b: any) => ({
           id: b.id, titulo: b.accion, cuerpo: b.detalle || "",
           tipo: b.accion, leida: true,
           created_at: b.ts, solicitud_id: b.solicitud_id,
         })))
+      } else {
+        setNotifs([])
       }
     }
   }, [userId])
 
   useEffect(() => { load() }, [load])
 
-  // Real-time subscription
+  // Real-time subscription (only if notificaciones table exists)
   useEffect(() => {
     const sb = createClient()
-    const channel = sb.channel("notifs-" + userId)
-      .on("postgres_changes", {
-        event: "INSERT", schema: "public", table: "notificaciones",
-        filter: `usuario_id=eq.${userId}`,
-      }, payload => {
-        setNotifs(prev => [payload.new as Notif, ...prev])
-      })
-      .subscribe()
-    return () => { sb.removeChannel(channel) }
+    try {
+      const channel = sb.channel("notifs-" + userId)
+        .on("postgres_changes", {
+          event: "INSERT", schema: "public", table: "notificaciones",
+          filter: `usuario_id=eq.${userId}`,
+        }, payload => {
+          setNotifs(prev => [payload.new as Notif, ...prev])
+        })
+        .subscribe()
+      return () => { sb.removeChannel(channel) }
+    } catch {}
   }, [userId])
 
   const markAllRead = async () => {
