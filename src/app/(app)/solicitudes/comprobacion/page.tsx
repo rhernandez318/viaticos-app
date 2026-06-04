@@ -1,5 +1,6 @@
 "use client"
 
+import { notifyUsers } from "@/lib/notify"
 import { useState, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
@@ -98,6 +99,13 @@ function NuevaComprobacionInner() {
       detalle: `Comprobación ${fmtMXN(total)} del anticipo ${anticipoSel.id}`,
       ts: new Date().toISOString(),
     })
+
+    // Notify gerente
+    const { data: pf } = await sb.from("usuarios").select("gerente_id, nombre").eq("id", user.id).single()
+    if (pf?.gerente_id) {
+      await notifyUsers([pf.gerente_id], "📎 Nueva comprobación por autorizar",
+        `${pf.nombre} comprobó ${fmtMXN(total)} del anticipo ${anticipoSel.id}`, `/solicitudes/${id}`)
+    }
 
     showToast("✓ Comprobación enviada a autorización")
     setTimeout(() => router.push("/solicitudes"), 1500)

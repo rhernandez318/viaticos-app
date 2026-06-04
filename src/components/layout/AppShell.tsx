@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { ThemePanel } from "@/components/ui/ThemePanel"
 import { NotificationBell } from "@/components/ui/NotificationBell"
+import { PushNotifications } from "@/components/ui/PushNotifications"
 import { useState } from "react"
 
 interface NavItem { id: string; label: string; icon: string; href: string }
@@ -121,6 +122,9 @@ export default function AppShell({ user, children }: { user: any; children: Reac
           </button>
         </div>
       </aside>
+
+      {/* ── Push notifications (registers FCM + shows toasts) */}
+      <PushNotifications userId={user.id}/>
 
       {/* ── Mobile bottom nav ──────────────────────────────── */}
       <nav className="mobile-nav">

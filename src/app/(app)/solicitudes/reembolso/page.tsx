@@ -1,5 +1,6 @@
 "use client"
 
+import { notifyUsers } from "@/lib/notify"
 import { useState, useRef, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
@@ -120,6 +121,13 @@ export default function NuevoReembolsoPage() {
       detalle: `Reembolso ${fmtMXN(total)} · ${itemsValidos.length} comprobante(s)`,
       ts: new Date().toISOString(),
     })
+
+    // Notify gerente
+    const { data: pf } = await sb.from("usuarios").select("gerente_id, nombre").eq("id", user.id).single()
+    if (pf?.gerente_id) {
+      await notifyUsers([pf.gerente_id], "🧾 Nuevo reembolso por autorizar",
+        `${pf.nombre} solicitó ${fmtMXN(total)}`, `/solicitudes/${id}`)
+    }
 
     showToast("✓ Reembolso enviado a autorización")
     setTimeout(() => router.push("/solicitudes"), 1500)

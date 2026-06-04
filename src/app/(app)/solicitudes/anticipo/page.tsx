@@ -1,5 +1,6 @@
 "use client"
 
+import { notifyUsers } from "@/lib/notify"
 import { useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
@@ -66,6 +67,13 @@ export default function SolicitarAnticipoPage() {
       solicitud_id: id, accion: "solicitado", usuario_id: user.id,
       detalle: `Anticipo creado por ${fmtMXN(totalDesg)}`, ts: new Date().toISOString(),
     })
+
+    // Notify gerente
+    const { data: pf } = await sb.from("usuarios").select("gerente_id, nombre").eq("id", user.id).single()
+    if (pf?.gerente_id) {
+      await notifyUsers([pf.gerente_id], "📋 Nuevo anticipo por autorizar",
+        `${pf.nombre} solicitó ${fmtMXN(totalDesg)} — ${concepto.trim()}`, `/solicitudes/${id}`)
+    }
 
     showToast("✓ Anticipo enviado a autorización")
     setTimeout(() => router.push("/solicitudes"), 1500)
