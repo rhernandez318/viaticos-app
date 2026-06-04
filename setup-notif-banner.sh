@@ -1,3 +1,8 @@
+#!/bin/bash
+set -e
+
+mkdir -p src/components/ui
+cat > 'src/components/ui/PushNotifications.tsx' << 'FILEEOF'
 "use client"
 import { useEffect, useState, useRef } from "react"
 
@@ -189,3 +194,9 @@ export function PushNotifications({ userId }: Props) {
   )
 }
 
+FILEEOF
+
+git add .
+git commit -m "feat: notification opt-in banner with user gesture"
+git push
+echo "✓ Done"
