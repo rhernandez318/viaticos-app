@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { fmtMXN } from "@/lib/format"
+import { NotifButton } from "@/components/ui/NotifButton"
 
 export default async function PerfilPage() {
   const sb = await createClient()
@@ -65,6 +66,13 @@ export default async function PerfilPage() {
         </div>
         <div style={{ marginTop: 10, fontSize: 11.5, color: "var(--text-3)", fontStyle: "italic" }}>
           Para cambiar CLABE o banco, contacta a Tesorería.
+        </div>
+        <div style={{ marginTop: 16, paddingTop: 14, borderTop: "1px solid var(--border)" }}>
+          <NotifButton/>
+        </div>
+        <div style={{ marginTop: 14, paddingTop: 12, borderTop: "1px solid var(--border)", fontSize: 12, color: "var(--text-3)" }}>
+          Las notificaciones push se activan automáticamente al usar la app.
+          Si no las recibiste, cierra y vuelve a abrir la app para ver el banner.
         </div>
       </div>
 
