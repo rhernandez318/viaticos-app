@@ -18,7 +18,7 @@ export function ThemePanel() {
       {open && (
         <>
           <div style={{ position:"fixed", inset:0, zIndex:49 }} onClick={() => setOpen(false)}/>
-          <div style={{ position:"absolute", top:40, right:0, zIndex:50, width:220,
+          <div style={{ position:"fixed", top:56, right:8, zIndex:200, width:220,
             background:"var(--surface)", border:"1px solid var(--border)", borderRadius:12,
             padding:14, boxShadow:"0 8px 32px rgba(0,0,0,.3)" }}>
             <div style={{ fontSize:11, fontWeight:600, textTransform:"uppercase",

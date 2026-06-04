@@ -112,8 +112,8 @@ export function NotificationBell({ userId }: { userId: string }) {
         <>
           <div style={{ position: "fixed", inset: 0, zIndex: 49 }} onClick={() => setOpen(false)} />
           <div style={{
-            position: "absolute", top: 44, right: 0, zIndex: 50,
-            width: 340, maxHeight: 480, overflowY: "auto",
+            position: "fixed", top: 56, left: 8, right: 8, zIndex: 200,
+            width: "auto", maxWidth: 360, maxHeight: 480, overflowY: "auto",
             background: "var(--surface)", border: "1px solid var(--border)",
             borderRadius: 12, boxShadow: "0 8px 32px rgba(0,0,0,.4)",
           }}>
