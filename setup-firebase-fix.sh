@@ -1,3 +1,8 @@
+#!/bin/bash
+set -e
+
+mkdir -p src/lib
+cat > 'src/lib/firebase.ts' << 'FILEEOF'
 // Firebase Messaging - client-side only, all imports are dynamic/lazy
 
 const VAPID_KEY = process.env.NEXT_PUBLIC_FCM_VAPID_KEY
@@ -56,3 +61,9 @@ export async function listenMessages(callback: (payload: any) => void) {
   } catch {}
 }
 
+FILEEOF
+
+git add .
+git commit -m "fix: firebase dynamic imports to fix Vercel SSR build"
+git push
+echo "✓ Done - Vercel should deploy successfully now"
