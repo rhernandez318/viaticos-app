@@ -208,3 +208,25 @@ body {
   to   { transform: translateY(0);    opacity: 1; }
 }
 
+/* ── Mobile top bar ──────────────────────────────────────────────────────── */
+.mobile-topbar {
+  display: none;
+}
+@media (max-width: 768px) {
+  .mobile-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 16px;
+    margin: -16px -16px 16px -16px;
+  }
+  .main-content {
+    padding-top: 0 !important;
+  }
+}
+
