@@ -1,3 +1,7 @@
+#!/bin/bash
+set -e
+
+cat > 'src/components/ReportesPage.tsx' << 'FILEEOF'
 "use client"
 import { useState, useEffect, useMemo } from "react"
 import { createClient } from "@/lib/supabase/client"
@@ -417,3 +421,9 @@ export default function ReportesPage() {
 }
 
 
+FILEEOF
+
+git add .
+git commit -m "fix: exclude comprobado anticipos from KPIs to avoid double counting"
+git push
+echo "✓ Done"
