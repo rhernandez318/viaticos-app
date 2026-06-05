@@ -1,3 +1,7 @@
+#!/bin/bash
+set -e
+
+cat > 'src/components/ReportesPage.tsx' << 'FILEEOF'
 "use client"
 import { useState, useEffect, useMemo } from "react"
 import { createClient } from "@/lib/supabase/client"
@@ -400,3 +404,9 @@ export default function ReportesPage() {
 }
 
 
+FILEEOF
+
+git add .
+git commit -m "fix: reportes KPIs only count liberado/comprobado, exclude rechazado from charts"
+git push
+echo "✓ Done"
