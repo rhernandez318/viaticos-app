@@ -1,3 +1,7 @@
+#!/bin/bash
+set -e
+
+cat > 'src/app/(app)/gerente/page.tsx' << 'FILEEOF'
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
@@ -262,3 +266,9 @@ export default function GerenteBandejaPage() {
   )
 }
 
+FILEEOF
+
+git add .
+git commit -m "fix: notify admins (push + in-app bell) when gerente approves"
+git push
+echo "✓ Done"
