@@ -8,6 +8,7 @@ import { fmtMXN, fmtFecha } from "@/lib/format"
 import { CompUploader } from "@/components/ui/CompUploader"
 import { useCatalogos } from "@/hooks/useCatalogos"
 import { isComidas } from "@/lib/cuentaComidas"
+import { normalizaCuenta } from "@/lib/normalizaCuenta"
 import type { CfdItem, Solicitud } from "@/types"
 import { Suspense } from "react"
 

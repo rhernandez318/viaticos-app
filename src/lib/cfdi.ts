@@ -21,17 +21,49 @@ function qn(parent: Document | Element, localName: string): Element | null {
   return null
 }
 
-const CUENTA_PATTERNS: [RegExp, string, number][] = [
-  [/(peaje|caseta|autopista|telepeaje|iave|pase)/i, "6122700001", 0.9],
-  [/(estacionamiento|parking|parquímetro|pensión)/i, "6122700002", 0.9],
-  [/(gasolina|combustible|magna|premium|diésel|pemex)/i, "6122600001", 0.9],
-  [/(taxi|uber|didi|cabify|transporte)/i, "6122900002", 0.85],
-  [/(hotel|hospedaje|alojamiento)/i, "6122100001", 0.85],
-  [/(restaurante|alimentos|comida|viáticos)/i, "6122200001", 0.8],
-  [/(aéreo|vuelo|boleto|avión)/i, "6122400001", 0.85],
+// SAT ClaveProdServ prefixes → contable account type
+const SAT_CLAVESERV_MAP: [string, string][] = [
+  ["9010", "alimentos"],   // 90101501 = consumo alimentos, 90101800 = servicios comida
+  ["5015", "hospedaje"],   // 50151500 = hotel/alojamiento
+  ["7810", "aereo"],       // 78101500 = transporte aéreo
+  ["7812", "taxi"],        // 78121500 = transporte terrestre
+  ["7813", "taxi"],        // 78131500 = taxi local
+  ["1517", "gasolina"],    // 15171500 = combustibles
+  ["7211", "peaje"],       // 72111500 = peaje autopistas
 ]
 
-function guessCuenta(text: string): [string, number] {
+const CUENTA_PATTERNS: [RegExp, string, number][] = [
+  [/(peaje|caseta|autopista|telepeaje|iave|pase)/i,             "6122700001", 0.9],
+  [/(estacionamiento|parking|parquímetro|pensión)/i,            "6122700002", 0.9],
+  [/(gasolina|combustible|magna|premium|diésel|pemex)/i,        "6122600001", 0.9],
+  [/(taxi|uber|didi|cabify|transporte local)/i,                 "6122900002", 0.85],
+  [/(hotel|hospedaje|alojamiento)/i,                            "6122100001", 0.85],
+  [/(restaurante|alimentos|comida|viático|consumo)/i,           "6122200001", 0.85],
+  [/(aéreo|vuelo|boleto.*avión|pasaje.*aéreo)/i,                "6122400001", 0.85],
+]
+
+// Map SAT service code prefix to concept type
+function getTypeFromClave(clave: string): string | null {
+  for (const [prefix, type] of SAT_CLAVESERV_MAP) {
+    if (clave.startsWith(prefix)) return type
+  }
+  return null
+}
+
+function guessCuenta(text: string, claveProdServ?: string): [string, number] {
+  // First try SAT ClaveProdServ (most reliable)
+  if (claveProdServ) {
+    const type = getTypeFromClave(claveProdServ)
+    if (type) {
+      const byType: Record<string, string> = {
+        alimentos: "6122200001", hospedaje: "6122100001",
+        aereo: "6122400001",    taxi: "6122900002",
+        gasolina: "6122600001", peaje: "6122700001",
+      }
+      if (byType[type]) return [byType[type], 0.95]
+    }
+  }
+  // Then try text patterns
   for (const [regex, cuenta, conf] of CUENTA_PATTERNS) {
     if (regex.test(text)) return [cuenta, conf]
   }
@@ -72,7 +104,7 @@ export function parseCFDIXml(xmlText: string): CfdItem | null {
     const claveProdServ = attr(conceptoEl, "ClaveProdServ", "claveProdServ") || ""
 
     const matchText = (emisor + " " + conceptoStr + " " + claveProdServ + " " + rfcEmisor).toLowerCase()
-    const [cuenta, confianza] = guessCuenta(matchText)
+    const [cuenta, confianza] = guessCuenta(matchText, claveProdServ)
 
     return {
       uuid,
@@ -92,4 +124,5 @@ export function parseCFDIXml(xmlText: string): CfdItem | null {
     return null
   }
 }
+
 

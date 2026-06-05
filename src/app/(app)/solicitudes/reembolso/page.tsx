@@ -6,6 +6,7 @@ import { fmtMXN } from "@/lib/format"
 import { parseCFDIXml } from "@/lib/cfdi"
 import { useCatalogos } from "@/hooks/useCatalogos"
 import { isComidas } from "@/lib/cuentaComidas"
+import { normalizaCuenta } from "@/lib/normalizaCuenta"
 import { notifyUsers } from "@/lib/notify"
 import type { CfdItem } from "@/types"
 
@@ -65,6 +66,8 @@ export default function NuevoReembolsoPage() {
         const parsed = parseCFDIXml(text)
         if (!parsed) { showToast(`XML inválido: ${file.name}`, false); continue }
         parsed.archivoUrl = archivoUrl
+        // Normalize parsed account code to one that exists in the catalog
+        parsed.cuenta = normalizaCuenta(parsed.cuenta, catalogoGastos)
         const motivoDup = await checkDuplicado(parsed.uuid)
         setItems(prev => [...prev, { ...parsed, duplicado: !!motivoDup, motivoDup: motivoDup || undefined }])
       } else {
