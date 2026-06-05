@@ -1,4 +1,5 @@
 "use client"
+import React from "react"
 
 import { useState, useEffect, useReducer } from "react"
 import { useRouter } from "next/navigation"
@@ -37,8 +38,19 @@ export default function MisSolicitudesPage() {
     })
   }, [])
 
+  // CMPs/REEs with anticipo_ref are shown inline under their ANT — not as standalone rows
+  const vinculados = new Set(solicitudes.filter(s => s.anticipoRef).map(s => s.id))
+  // For each ANT, build a map to its linked comprobaciones
+  const compsByAnticipo: Record<string, typeof solicitudes> = {}
+  solicitudes.filter(s => s.anticipoRef).forEach(s => {
+    if (!compsByAnticipo[s.anticipoRef!]) compsByAnticipo[s.anticipoRef!] = []
+    compsByAnticipo[s.anticipoRef!].push(s)
+  })
+
   const filtradas = solicitudes
     .filter(s => {
+      // Hide CMPs/REEs that belong to an ANT (shown inline)
+      if (s.anticipoRef && vinculados.has(s.id)) return false
       if (filtroTipo !== "todos" && s.tipo !== filtroTipo) return false
       if (filtroStatus !== "todos" && s.status !== filtroStatus) return false
       if (busqueda.trim()) {
@@ -119,7 +131,8 @@ export default function MisSolicitudesPage() {
             </thead>
             <tbody>
               {filtradas.map(s => (
-                <tr key={s.id} style={{ cursor: "pointer" }}
+                <React.Fragment key={s.id}>
+                <tr style={{ cursor: "pointer" }}
                   onClick={() => router.push(`/solicitudes/${s.id}`)}>
                   <td className="mono" style={{ fontSize: 11 }}>{s.id}</td>
                   <td><TipoBadge tipo={s.tipo} /></td>
@@ -127,7 +140,24 @@ export default function MisSolicitudesPage() {
                     {s.concepto}
                   </td>
                   <td className="muted mono" style={{ fontSize: 12 }}>{fmtFecha(s.fecha)}</td>
-                  <td className="num">{fmtMXN(s.monto)}</td>
+                  <td className="num">
+                    <div style={{ fontWeight:600 }}>{fmtMXN(s.monto)}</div>
+                    {/* Show comprobacion breakdown for anticipos */}
+                    {s.tipo === "anticipo" && compsByAnticipo[s.id]?.length > 0 && (() => {
+                      const comps = compsByAnticipo[s.id]
+                      const totalComp = comps.reduce((a,c) => a + c.monto, 0)
+                      const diff = totalComp - s.monto
+                      const color = diff > 0.01 ? "var(--accent)" : diff < -0.01 ? "var(--warn)" : "var(--success)"
+                      const label = diff > 0.01 ? `+${fmtMXN(diff)}` : diff < -0.01 ? `−${fmtMXN(Math.abs(diff))}` : "Exacto"
+                      return (
+                        <div style={{ fontSize:10, marginTop:3 }}>
+                          <span style={{ color:"var(--text-3)" }}>Comp: </span>
+                          <span style={{ fontWeight:600 }}>{fmtMXN(totalComp)}</span>
+                          <span style={{ marginLeft:4, color, fontWeight:600 }}>{label}</span>
+                        </div>
+                      )
+                    })()}
+                  </td>
                   <td className="num">
                     {s.tipo === "anticipo" && (s.saldoPendiente || 0) > 0
                       ? <span style={{ color: "var(--warn)", fontWeight: 600 }}>{fmtMXN(s.saldoPendiente!)}</span>
@@ -160,6 +190,21 @@ export default function MisSolicitudesPage() {
                     )}
                   </td>
                 </tr>
+                {s.tipo === "anticipo" && compsByAnticipo[s.id]?.map(cmp => (
+                  <tr key={cmp.id}
+                    style={{ cursor:"pointer", background:"var(--surface-2)", fontSize:12 }}
+                    onClick={() => router.push(`/solicitudes/${cmp.id}`)}>
+                    <td className="mono" style={{ fontSize:10, paddingLeft:28, color:"var(--text-3)" }}>↳ {cmp.id}</td>
+                    <td><TipoBadge tipo={cmp.tipo}/></td>
+                    <td style={{ fontSize:12, color:"var(--text-3)", maxWidth:200, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{cmp.concepto}</td>
+                    <td className="muted mono" style={{ fontSize:11 }}>{fmtFecha(cmp.fecha)}</td>
+                    <td className="num" style={{ fontWeight:600 }}>{fmtMXN(cmp.monto)}</td>
+                    <td className="muted num">—</td>
+                    <td><StatusBadge status={cmp.status}/></td>
+                    <td/>
+                  </tr>
+                ))}
+                </React.Fragment>
               ))}
             </tbody>
           </table>
