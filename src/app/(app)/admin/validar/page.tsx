@@ -80,7 +80,11 @@ export default function AdminValidarPage() {
     const s = solicitudes.find(x=>x.id===id)
     const newStatus = devolver ? "devuelto" : "rechazado"
     await sb.from("solicitudes")
-      .update({ status: newStatus, motivo_rechazo:`[Admin] ${motivo.trim()}` })
+      .update({
+        status: newStatus,
+        motivo_rechazo: `[Admin] ${motivo.trim()}`,
+        ...(newStatus === "rechazado" && s?.tipo === "anticipo" ? { saldo_pendiente: 0 } : {}),
+      })
       .eq("id",id)
     await sb.from("bitacora").insert({
       solicitud_id:id,
