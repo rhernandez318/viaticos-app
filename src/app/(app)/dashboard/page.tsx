@@ -66,10 +66,11 @@ export default function DashboardPage() {
 
   const drillItems = activeStatus ? byStatus[activeStatus] : []
 
-  const VALIDOS = ["solicitado","autorizado","validado","liberado","parcial","comprobado"]
+  const VALIDOS = ["liberado","comprobado"]  // KPIs: only settled amounts
   const solicitudesValidas = solicitudes.filter(s => VALIDOS.includes(s.status))
   const totalMonto = solicitudesValidas.reduce((a,s)=>a+parseFloat(s.monto||0),0)
-  const saldoPendiente = solicitudesValidas.filter(s=>s.tipo==="anticipo"&&parseFloat(s.saldo_pendiente)>0)
+  const saldoPendiente = solicitudes
+    .filter(s=>["liberado","parcial"].includes(s.status)&&s.tipo==="anticipo"&&parseFloat(s.saldo_pendiente)>0)
     .reduce((a,s)=>a+parseFloat(s.saldo_pendiente||0),0)
 
   return (
@@ -77,7 +78,7 @@ export default function DashboardPage() {
       <div className="page-head">
         <div>
           <h1 className="page-title">Workflow</h1>
-          <div className="page-sub">Vista interactiva por estatus · {solicitudes.length} solicitudes</div>
+          <div className="page-sub">Vista interactiva por estatus · {solicitudes.filter(s=>s.status!=="rechazado").length} activas</div>
         </div>
         {saldoPendiente > 0 && (
           <div style={{textAlign:"right"}}>

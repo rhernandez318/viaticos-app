@@ -52,6 +52,9 @@ export default function MisSolicitudesPage() {
   const totalAbierto = solicitudes
     .filter(s => ["liberado","parcial"].includes(s.status) && (s.saldoPendiente || 0) > 0)
     .reduce((a, s) => a + (s.saldoPendiente || 0), 0)
+  const totalGestionado = solicitudes
+    .filter(s => ["liberado","comprobado"].includes(s.status))
+    .reduce((a, s) => a + (s.monto || 0), 0)
   const enProceso = solicitudes.filter(s => ["solicitado","autorizado","validado","devuelto"].includes(s.status)).length
   const rechazadas = solicitudes.filter(s => s.status === "rechazado").length
 

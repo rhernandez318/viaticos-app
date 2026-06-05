@@ -81,7 +81,9 @@ export default function TodasSolicitudesPage() {
     return list
   }, [solicitudes, usuarios, q, filtroStatus, filtroTipo, filtroUser, filtroDivision, fechaIni, fechaFin, sortField, sortDir])
 
-  const totalFiltrado = filtradas.reduce((a, s) => a + parseFloat(s.monto || 0), 0)
+  const PAGADOS = ["liberado","comprobado"]
+  const filtradas_pagadas = filtradas.filter(s => PAGADOS.includes(s.status))
+  const totalFiltrado = filtradas_pagadas.reduce((a, s) => a + parseFloat(s.monto || 0), 0)
   const saldoPendiente = filtradas
     .filter(s => s.tipo === "anticipo" && parseFloat(s.saldo_pendiente) > 0)
     .reduce((a, s) => a + parseFloat(s.saldo_pendiente), 0)
@@ -270,4 +272,5 @@ export default function TodasSolicitudesPage() {
     </>
   )
 }
+
 
