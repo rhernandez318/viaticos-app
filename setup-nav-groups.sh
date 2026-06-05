@@ -1,3 +1,7 @@
+#!/bin/bash
+set -e
+
+cat > 'src/components/layout/AppShell.tsx' << 'FILEEOF'
 "use client"
 
 import { usePathname } from "next/navigation"
@@ -284,3 +288,9 @@ export default function AppShell({ user, children }: { user: any; children: Reac
 }
 
 
+FILEEOF
+
+git add .
+git commit -m "feat: grouped sidebar nav with section headers per role"
+git push
+echo "✓ Done"
