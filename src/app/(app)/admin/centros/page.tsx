@@ -98,8 +98,8 @@ export default function AdminCentrosPage() {
       <input className="input" placeholder="Buscar por clave o nombre…" value={busqueda}
         onChange={e=>setBusqueda(e.target.value)} style={{marginBottom:14,maxWidth:340}}/>
 
-      <div className="card" style={{padding:0,overflow:"hidden"}}>
-        <table className="t">
+      <div className="card" style={{padding:0,overflow:"auto"}}>
+        <table className="t" style={{minWidth:600}}>
           <thead><tr><th>Clave</th><th>Nombre</th><th>Depto</th><th>División</th><th>Activo</th><th></th></tr></thead>
           <tbody>
             {filtrados.map((c:any)=>(
@@ -125,4 +125,5 @@ export default function AdminCentrosPage() {
     </>
   )
 }
+
 

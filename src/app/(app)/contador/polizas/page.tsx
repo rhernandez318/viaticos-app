@@ -137,7 +137,7 @@ export default function ContadorPolizasPage() {
             const cuadrada = Math.abs(p.debe - p.haber) < 0.01
             const isOpen = expanded === p.ref
             return (
-              <div key={p.ref} className="card" style={{ padding: 0, overflow: "hidden" }}>
+              <div key={p.ref} className="card" style={{ padding: 0, overflow: "auto" }}>
                 {/* Header */}
                 <div style={{ padding: "12px 16px", display: "flex", alignItems: "center",
                   gap: 12, cursor: "pointer" }}
@@ -229,4 +229,5 @@ export default function ContadorPolizasPage() {
     </>
   )
 }
+
 

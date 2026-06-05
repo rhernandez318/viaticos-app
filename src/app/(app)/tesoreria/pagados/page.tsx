@@ -70,11 +70,11 @@ export default function TesoreriaPagadosPage() {
         </select>
       </div>
 
-      <div className="card" style={{ padding:0, overflow:"hidden" }}>
+      <div className="card" style={{ padding:0, overflow:"auto" }}>
         {loading ? (
           <div style={{ padding:40, textAlign:"center", color:"var(--text-3)" }}>Cargando…</div>
         ) : (
-          <table className="t">
+          <table className="t" style={{minWidth:700}}>
             <thead>
               <tr>
                 <th>Folio</th>
@@ -122,4 +122,5 @@ export default function TesoreriaPagadosPage() {
     </>
   )
 }
+
 

@@ -108,8 +108,8 @@ export default function LimitesPage() {
         </div>
       )}
 
-      <div className="card" style={{padding:0,overflow:"hidden"}}>
-        <table className="t">
+      <div className="card" style={{padding:0,overflow:"auto"}}>
+        <table className="t" style={{minWidth:700}}>
           <thead><tr><th>Nombre</th><th>Cuenta</th><th>Rol</th><th className="num">Por solicitud</th><th className="num">Diario</th><th>Estado</th><th></th></tr></thead>
           <tbody>
             {limites.map((l:any)=>{
@@ -139,4 +139,5 @@ export default function LimitesPage() {
     </>
   )
 }
+
 

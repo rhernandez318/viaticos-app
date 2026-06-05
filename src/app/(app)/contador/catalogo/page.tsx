@@ -31,9 +31,9 @@ export default function ContadorCatalogoPage() {
           {grupos.map(g=><option key={g} value={g}>{g==="todos"?"Todos los grupos":g}</option>)}
         </select>
       </div>
-      <div className="card" style={{padding:0,overflow:"hidden"}}>
+      <div className="card" style={{padding:0,overflow:"auto"}}>
         {loading ? <div style={{padding:40,textAlign:"center",color:"var(--text-3)"}}>Cargando…</div> : (
-          <table className="t">
+          <table className="t" style={{minWidth:650}}>
             <thead><tr><th>Cuenta</th><th>Nombre</th><th>Grupo</th></tr></thead>
             <tbody>{filtradas.map((c:any)=>(
               <tr key={c.cuenta}>
@@ -48,4 +48,5 @@ export default function ContadorCatalogoPage() {
     </>
   )
 }
+
 

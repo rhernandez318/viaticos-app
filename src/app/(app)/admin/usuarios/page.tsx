@@ -208,11 +208,11 @@ export default function AdminUsuariosPage() {
       <input className="input" placeholder="Buscar por nombre, correo o rol…" value={busqueda}
         onChange={e=>setBusqueda(e.target.value)} style={{marginBottom:14,maxWidth:380}}/>
 
-      <div className="card" style={{padding:0,overflow:"hidden"}}>
+      <div className="card" style={{padding:0,overflow:"auto"}}>
         {loading ? (
           <div style={{padding:40,textAlign:"center",color:"var(--text-3)"}}>Cargando…</div>
         ) : (
-          <table className="t">
+          <table className="t" style={{minWidth:700}}>
             <thead><tr><th>Usuario</th><th>Correo</th><th>Rol</th><th>División</th><th>Centro</th><th></th></tr></thead>
             <tbody>
               {filtrados.map((u:any)=>(
@@ -239,4 +239,5 @@ export default function AdminUsuariosPage() {
     </>
   )
 }
+
 

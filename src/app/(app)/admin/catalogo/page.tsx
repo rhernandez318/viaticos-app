@@ -106,8 +106,8 @@ export default function AdminCatalogoPage() {
         </select>
       </div>
 
-      <div className="card" style={{padding:0,overflow:"hidden"}}>
-        <table className="t">
+      <div className="card" style={{padding:0,overflow:"auto"}}>
+        <table className="t" style={{minWidth:650}}>
           <thead><tr><th>Cuenta</th><th>Nombre</th><th>Grupo</th><th>Activo</th><th></th></tr></thead>
           <tbody>
             {filtradas.map((c:any)=>(
@@ -132,4 +132,5 @@ export default function AdminCatalogoPage() {
     </>
   )
 }
+
 
