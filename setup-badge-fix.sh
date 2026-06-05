@@ -1,3 +1,7 @@
+#!/bin/bash
+set -e
+
+cat > 'src/components/ui/StatusBadge.tsx' << 'FILEEOF'
 import type { SolicitudStatus } from "@/types"
 
 const LABELS: Record<string, string> = {
@@ -20,3 +24,9 @@ export function TipoBadge({ tipo }: { tipo: string }) {
   return <span className="badge tipo">{map[tipo] ?? tipo}</span>
 }
 
+FILEEOF
+
+git add .
+git commit -m "fix: duplicate devuelto key in StatusBadge"
+git push
+echo "✓ Done"
