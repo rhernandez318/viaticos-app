@@ -1,7 +1,7 @@
 import type { SolicitudStatus } from "@/types"
 
 const LABELS: Record<string, string> = {
-  solicitado: "Solicitado", autorizado: "Aut. Gerente", validado: "Aut. Admin",
+  solicitado: "Solicitado", autorizado: "Pend. Admin", validado: "Aut. Admin",
   liberado: "Liberado", comprobado: "Comprobado", rechazado: "Rechazado", parcial: "Parcial",
 }
 

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { fmtMXN, fmtFecha } from "@/lib/format"
+import { notifyUsers } from "@/lib/notify"
 import { TipoBadge } from "@/components/ui/StatusBadge"
 import type { Solicitud } from "@/types"
 
