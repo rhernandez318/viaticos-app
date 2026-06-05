@@ -2,7 +2,7 @@
 
 export type Rol = "usuario" | "gerente" | "tesoreria" | "contador" | "admin"
 
-export type SolicitudStatus = "solicitado" | "autorizado" | "validado" | "liberado" | "comprobado" | "rechazado" | "parcial"
+export type SolicitudStatus = "solicitado" | "autorizado" | "validado" | "liberado" | "comprobado" | "rechazado" | "parcial" | "devuelto" | "devuelto"
 
 export type SolicitudTipo = "anticipo" | "reembolso" | "comprobacion"
 
@@ -105,4 +105,5 @@ export interface PolizaLinea {
   ref: string
   _archivos?: Array<{ nombre: string; url: string | null; uuid: string | null; emisor?: string | null; total?: number }>
 }
+
 

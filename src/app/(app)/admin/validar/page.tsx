@@ -73,23 +73,27 @@ export default function AdminValidarPage() {
     setProcesando(null)
   }
 
-  const rechazar = async (id: string) => {
+  const rechazar = async (id: string, devolver = false) => {
     if (!motivo.trim()) { alert("Escribe el motivo"); return }
     setProcesando(id)
     const sb = createClient()
     const s = solicitudes.find(x=>x.id===id)
+    const newStatus = devolver ? "devuelto" : "rechazado"
     await sb.from("solicitudes")
-      .update({ status:"rechazado", motivo_rechazo:`[Admin] ${motivo.trim()}` })
+      .update({ status: newStatus, motivo_rechazo:`[Admin] ${motivo.trim()}` })
       .eq("id",id)
     await sb.from("bitacora").insert({
-      solicitud_id:id, accion:"rechazado", usuario_id:userId,
-      detalle:`Rechazado por admin: ${motivo.trim()}`, ts:new Date().toISOString(),
+      solicitud_id:id,
+      accion: s?.tipo === "comprobacion" ? "devuelto" : "rechazado",
+      usuario_id:userId,
+      detalle:`${s?.tipo==="comprobacion"?"Devuelto para corrección":"Rechazado"} por admin: ${motivo.trim()}`,
+      ts:new Date().toISOString(),
     })
     try {
       const sb2 = createClient()
       await sb2.from("notificaciones").insert({
-        usuario_id:s?.usuario, titulo:"❌ Solicitud rechazada por Admin",
-        cuerpo:`${id}: ${motivo.trim()}`, tipo:"rechazo", leida:false,
+        usuario_id:s?.usuario, titulo: s?.tipo==="comprobacion" ? "↩️ Comprobación devuelta para corrección" : "❌ Solicitud rechazada por Admin",
+        cuerpo:`${motivo.trim()}`, tipo:"rechazo", leida:false,
         created_at:new Date().toISOString(),
       })
     } catch {}
@@ -217,4 +221,5 @@ export default function AdminValidarPage() {
     </>
   )
 }
+
 

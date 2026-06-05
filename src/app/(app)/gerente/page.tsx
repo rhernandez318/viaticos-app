@@ -114,21 +114,23 @@ export default function GerenteBandejaPage() {
     setProcesando(null)
   }
 
-  const rechazar = async (id: string) => {
+  const rechazar = async (id: string, devolver = false) => {
     if (!motivoRechazo.trim()) { alert("Escribe el motivo de rechazo"); return }
     setProcesando(id)
     const sb = createClient()
     const s = solicitudes.find(x => x.id === id)
+    const newStatus = devolver ? "devuelto" : "rechazado"
     await sb.from("solicitudes")
-      .update({ status: "rechazado", motivo_rechazo: motivoRechazo.trim() })
+      .update({ status: newStatus, motivo_rechazo: motivoRechazo.trim() })
       .eq("id", id)
     await sb.from("bitacora").insert({
-      solicitud_id: id, accion: "rechazado", usuario_id: userId,
-      detalle: motivoRechazo.trim(), ts: new Date().toISOString(),
+      solicitud_id: id, accion: newStatus, usuario_id: userId,
+      detalle: (s?.tipo==="comprobacion"?"Devuelto para corrección: ":"Rechazado: ") + motivoRechazo.trim(), ts: new Date().toISOString(),
     })
     try {
       await sb.from("notificaciones").insert({
-        usuario_id: s?.usuario, titulo: "Solicitud rechazada",
+        usuario_id: s?.usuario,
+        titulo: devolver ? "⚠ Solicitud devuelta para corrección" : "❌ Solicitud rechazada",
         cuerpo: `${id}: ${motivoRechazo.trim()}`, tipo: "rechazo",
         leida: false, created_at: new Date().toISOString(),
       })
@@ -180,9 +182,15 @@ export default function GerenteBandejaPage() {
               style={{resize:"vertical",marginBottom:12}}/>
             <div style={{display:"flex",gap:8,justifyContent:"flex-end"}}>
               <button className="btn ghost" onClick={()=>{setRechazandoId(null);setMotivoRechazo("")}}>Cancelar</button>
+              {solicitudes.find(s=>s.id===rechazandoId)?.tipo !== "anticipo" && (
+                <button className="btn" style={{background:"var(--warn)",border:"none",color:"#fff",fontWeight:600}}
+                  onClick={()=>rechazar(rechazandoId, true)} disabled={!!procesando}>
+                  ↩ Devolver para corrección
+                </button>
+              )}
               <button className="btn" style={{background:"var(--danger)",border:"none",color:"#fff"}}
-                onClick={()=>rechazar(rechazandoId)} disabled={!!procesando}>
-                {procesando?"Procesando…":"Rechazar"}
+                onClick={()=>rechazar(rechazandoId, false)} disabled={!!procesando}>
+                {procesando?"Procesando…":"Rechazar definitivo"}
               </button>
             </div>
           </div>
@@ -261,4 +269,5 @@ export default function GerenteBandejaPage() {
     </>
   )
 }
+
 

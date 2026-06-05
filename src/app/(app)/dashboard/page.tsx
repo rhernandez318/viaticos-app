@@ -66,8 +66,10 @@ export default function DashboardPage() {
 
   const drillItems = activeStatus ? byStatus[activeStatus] : []
 
-  const totalMonto = solicitudes.reduce((a,s)=>a+parseFloat(s.monto||0),0)
-  const saldoPendiente = solicitudes.filter(s=>s.tipo==="anticipo"&&parseFloat(s.saldo_pendiente)>0)
+  const VALIDOS = ["solicitado","autorizado","validado","liberado","parcial","comprobado"]
+  const solicitudesValidas = solicitudes.filter(s => VALIDOS.includes(s.status))
+  const totalMonto = solicitudesValidas.reduce((a,s)=>a+parseFloat(s.monto||0),0)
+  const saldoPendiente = solicitudesValidas.filter(s=>s.tipo==="anticipo"&&parseFloat(s.saldo_pendiente)>0)
     .reduce((a,s)=>a+parseFloat(s.saldo_pendiente||0),0)
 
   return (
@@ -122,7 +124,10 @@ export default function DashboardPage() {
           <div className="card" style={{marginBottom:16,padding:"10px 16px"}}>
             <div style={{display:"flex",gap:0,height:12,borderRadius:6,overflow:"hidden"}}>
               {(Object.entries(STATUS_CONFIG) as [Status,any][]).map(([status,cfg])=>{
-                const pct = solicitudes.length ? byStatus[status].length/solicitudes.length*100 : 0
+                // Exclude rechazado from progress bar (it distorts active flow)
+                if (status === "rechazado") return null
+                const validTotal = solicitudes.filter(s => s.status !== "rechazado").length
+                const pct = validTotal ? byStatus[status].length/validTotal*100 : 0
                 if (!pct) return null
                 return <div key={status} title={`${cfg.label}: ${byStatus[status].length}`}
                   style={{width:`${pct}%`,background:cfg.color,transition:"width .5s"}}/>
@@ -267,4 +272,5 @@ export default function DashboardPage() {
     </>
   )
 }
+
 

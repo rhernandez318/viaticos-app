@@ -52,7 +52,7 @@ export default function MisSolicitudesPage() {
   const totalAbierto = solicitudes
     .filter(s => ["liberado","parcial"].includes(s.status) && (s.saldoPendiente || 0) > 0)
     .reduce((a, s) => a + (s.saldoPendiente || 0), 0)
-  const enProceso = solicitudes.filter(s => ["solicitado","autorizado"].includes(s.status)).length
+  const enProceso = solicitudes.filter(s => ["solicitado","autorizado","validado","devuelto"].includes(s.status)).length
   const rechazadas = solicitudes.filter(s => s.status === "rechazado").length
 
   return (
@@ -93,7 +93,7 @@ export default function MisSolicitudesPage() {
         </select>
         <select className="select" style={{ width: 160 }} value={filtroStatus} onChange={e => setFiltroStatus(e.target.value)}>
           <option value="todos">Todos los status</option>
-          {["solicitado","autorizado","validado","liberado","parcial","comprobado","rechazado"].map(s => (
+          {["solicitado","autorizado","validado","liberado","parcial","comprobado","rechazado","devuelto"].map(s => (
             <option key={s} value={s} style={{ textTransform: "capitalize" }}>{s.charAt(0).toUpperCase()+s.slice(1)}</option>
           ))}
         </select>
@@ -165,4 +165,5 @@ export default function MisSolicitudesPage() {
     </>
   )
 }
+
 

@@ -84,6 +84,7 @@ body {
 .badge.autorizado { background: var(--accent-soft); color: var(--accent); }
 .badge.liberado   { background: rgba(96,165,250,.15); color: #60a5fa; }
 .badge.validado   { background: rgba(192,132,252,.15); color: #c084fc; }
+.badge.devuelto   { background: rgba(249,115,22,.15);  color: #f97316; }
 .badge.comprobado { background: var(--success-soft); color: var(--success); }
 .badge.rechazado  { background: var(--danger-soft); color: var(--danger); }
 .badge.parcial    { background: rgba(245,158,11,.15); color: var(--warn); }
@@ -229,4 +230,5 @@ body {
     padding: 0 16px;
   }
 }
+
 
