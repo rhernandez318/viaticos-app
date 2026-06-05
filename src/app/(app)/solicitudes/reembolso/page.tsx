@@ -5,10 +5,9 @@ import { createClient } from "@/lib/supabase/client"
 import { fmtMXN } from "@/lib/format"
 import { parseCFDIXml } from "@/lib/cfdi"
 import { useCatalogos } from "@/hooks/useCatalogos"
+import { isComidas } from "@/lib/cuentaComidas"
 import { notifyUsers } from "@/lib/notify"
 import type { CfdItem } from "@/types"
-
-const CUENTA_COMIDAS = "6122200001"
 
 interface ItemConObs extends CfdItem { observaciones?: string }
 
@@ -86,7 +85,7 @@ export default function NuevoReembolsoPage() {
     if (total <= 0)                { showToast("⚠ Total cero — no se puede enviar", false); return }
 
     // Validate comidas observaciones
-    const sinObs = itemsValidos.filter(it => it.cuenta === CUENTA_COMIDAS && !it.observaciones?.trim())
+    const sinObs = itemsValidos.filter(it => isComidas(it.cuenta, catalogoGastos) && !it.observaciones?.trim())
     if (sinObs.length > 0) {
       showToast("⚠ Indica número y nombre de comensales en los gastos de alimentos", false); return
     }
@@ -116,6 +115,7 @@ export default function NuevoReembolsoPage() {
         archivo_url: it.archivoUrl,
         rfc_emisor: it.rfcEmisor, rfc_receptor: it.rfcReceptor,
         observaciones: it.observaciones || null,
+            nombre_cuenta: catalogoGastos.find(g => g.cuenta === it.cuenta)?.nombre || null,
       })))
     }
 
@@ -208,13 +208,13 @@ export default function NuevoReembolsoPage() {
                           <input className="input"
                             value={it.observaciones || ""}
                             onChange={e => setItems(prev => prev.map((x,j) => j===i ? {...x, observaciones:e.target.value} : x))}
-                            placeholder={it.cuenta===CUENTA_COMIDAS ? "Requerido: nombres y № comensales" : "Opcional"}
+                            placeholder={isComidas(it.cuenta, catalogoGastos) ? "Requerido: nombres y № comensales" : "Opcional"}
                             style={{
                               fontSize:11, padding:"5px 6px",
-                              borderColor: it.cuenta===CUENTA_COMIDAS && !it.observaciones ? "var(--danger)" : "var(--border)",
-                              background: it.cuenta===CUENTA_COMIDAS && !it.observaciones ? "var(--danger-soft)" : "var(--surface)",
+                              borderColor: isComidas(it.cuenta, catalogoGastos) && !it.observaciones ? "var(--danger)" : "var(--border)",
+                              background: isComidas(it.cuenta, catalogoGastos) && !it.observaciones ? "var(--danger-soft)" : "var(--surface)",
                             }}/>
-                          {it.cuenta===CUENTA_COMIDAS && !it.observaciones && (
+                          {isComidas(it.cuenta, catalogoGastos) && !it.observaciones && (
                             <div style={{ fontSize:10, color:"var(--danger)", marginTop:2 }}>
                               ⚠ Favor de indicar número y nombre de los comensales
                             </div>
@@ -264,4 +264,5 @@ export default function NuevoReembolsoPage() {
     </div>
   )
 }
+
 

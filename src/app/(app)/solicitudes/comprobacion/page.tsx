@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client"
 import { fmtMXN, fmtFecha } from "@/lib/format"
 import { CompUploader } from "@/components/ui/CompUploader"
 import { useCatalogos } from "@/hooks/useCatalogos"
+import { isComidas } from "@/lib/cuentaComidas"
 import type { CfdItem, Solicitud } from "@/types"
 import { Suspense } from "react"
 
@@ -62,7 +63,7 @@ function NuevaComprobacionInner() {
     if (!anticipoSel)              { showToast("⚠ Selecciona el anticipo a comprobar", false); return }
     if (itemsValidos.length === 0) { showToast("⚠ Agrega al menos un comprobante XML válido", false); return }
     if (total <= 0)                { showToast("⚠ El total es cero", false); return }
-    const sinCom = itemsValidos.filter(it => it.cuenta === "6122200001" && !(it as any).observaciones?.trim())
+    const sinCom = itemsValidos.filter(it => isComidas(it.cuenta, catalogoGastos) && !(it as any).observaciones?.trim())
     if (sinCom.length > 0) { showToast("⚠ Indica número y nombre de comensales en gastos de alimentos", false); return }
 
     setEnviando(true)
@@ -214,14 +215,14 @@ function NuevaComprobacionInner() {
                         className="input"
                         value={(it as any).observaciones || ""}
                         onChange={e => setItems(prev => prev.map((x,j) => j===i ? {...x, observaciones: e.target.value} : x))}
-                        placeholder={it.cuenta === "6122200001" ? "Requerido: nombres y número de comensales" : "Opcional"}
+                        placeholder={isComidas(it.cuenta, catalogoGastos) ? "Requerido: nombres y número de comensales" : "Opcional"}
                         style={{
                           fontSize:11, padding:"5px 6px",
-                          borderColor: it.cuenta === "6122200001" && !(it as any).observaciones ? "var(--danger)" : "var(--border)",
-                          background: it.cuenta === "6122200001" && !(it as any).observaciones ? "var(--danger-soft)" : "var(--surface)",
+                          borderColor: isComidas(it.cuenta, catalogoGastos) && !(it as any).observaciones ? "var(--danger)" : "var(--border)",
+                          background: isComidas(it.cuenta, catalogoGastos) && !(it as any).observaciones ? "var(--danger-soft)" : "var(--surface)",
                         }}
                       />
-                      {it.cuenta === "6122200001" && !(it as any).observaciones && (
+                      {isComidas(it.cuenta, catalogoGastos) && !(it as any).observaciones && (
                         <div style={{fontSize:10,color:"var(--danger)",marginTop:2}}>
                           ⚠ Favor de indicar número y nombre de los comensales
                         </div>
@@ -275,4 +276,5 @@ export default function NuevaComprobacionPage() {
     </Suspense>
   )
 }
+
 

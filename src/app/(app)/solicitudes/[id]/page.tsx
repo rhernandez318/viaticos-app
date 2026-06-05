@@ -92,7 +92,7 @@ export default async function DetallePage({ params }: { params: Promise<{ id: st
           <table className="t">
             <thead>
               <tr>
-                <th>UUID</th><th>Emisor</th><th>Cuenta</th>
+                <th>UUID</th><th>Emisor</th><th>Cuenta / Nombre</th><th>Comentarios</th>
                 <th className="num">Total</th><th>SAT</th><th></th>
               </tr>
             </thead>
@@ -103,7 +103,13 @@ export default async function DetallePage({ params }: { params: Promise<{ id: st
                     {cf.uuid ? cf.uuid.slice(0, 20) + "…" : "—"}
                   </td>
                   <td style={{ fontSize: 12 }}>{cf.emisor || "—"}</td>
-                  <td style={{ fontSize: 11, color: "var(--text-3)" }}>{cf.cuenta}</td>
+                  <td style={{ fontSize: 11 }}>
+                    <div className="mono" style={{ color:"var(--text-3)" }}>{cf.cuenta}</div>
+                    {cf.nombre_cuenta && <div style={{ fontSize:10, color:"var(--text-3)", marginTop:1 }}>{cf.nombre_cuenta}</div>}
+                  </td>
+                  <td style={{ fontSize: 11, color: cf.observaciones ? "var(--text-2)" : "var(--text-3)", maxWidth:180 }}>
+                    {cf.observaciones || <span className="muted">—</span>}
+                  </td>
                   <td className="num">{fmtMXN(parseFloat(cf.total))}</td>
                   <td>
                     {cf.sat_estado && (
@@ -167,4 +173,5 @@ export default async function DetallePage({ params }: { params: Promise<{ id: st
     </div>
   )
 }
+
 

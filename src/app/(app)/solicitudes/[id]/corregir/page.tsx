@@ -5,10 +5,10 @@ import { createClient } from "@/lib/supabase/client"
 import { fmtMXN } from "@/lib/format"
 import { parseCFDIXml } from "@/lib/cfdi"
 import { useCatalogos } from "@/hooks/useCatalogos"
+import { isComidas } from "@/lib/cuentaComidas"
 import { notifyUsers } from "@/lib/notify"
 import type { CfdItem } from "@/types"
 
-const CUENTA_COMIDAS = "6122200001"
 interface ItemConObs extends CfdItem { observaciones?: string }
 
 export default function CorregirComprobacionPage() {
@@ -59,7 +59,7 @@ export default function CorregirComprobacionPage() {
     const validos = items.filter(i => !i.duplicado)
     if (!validos.length) { showToast("⚠ Sin comprobantes válidos", false); return }
 
-    const sinObs = validos.filter(it => it.cuenta === CUENTA_COMIDAS && !it.observaciones?.trim())
+    const sinObs = validos.filter(it => isComidas(it.cuenta, catalogoGastos) && !it.observaciones?.trim())
     if (sinObs.length) { showToast("⚠ Indica comensales en los gastos de alimentos", false); return }
 
     setEnviando(true)
@@ -166,10 +166,10 @@ export default function CorregirComprobacionPage() {
                   <input className="input"
                     value={it.observaciones||""}
                     onChange={e=>setItems(prev=>prev.map((x,j)=>j===i?{...x,observaciones:e.target.value}:x))}
-                    placeholder={it.cuenta===CUENTA_COMIDAS?"Requerido: nombres y № comensales":"Opcional"}
+                    placeholder={isComidas(it.cuenta, catalogoGastos)?"Requerido: nombres y № comensales":"Opcional"}
                     style={{fontSize:11,padding:"5px 6px",
-                      borderColor:it.cuenta===CUENTA_COMIDAS&&!it.observaciones?"var(--danger)":"var(--border)"}}/>
-                  {it.cuenta===CUENTA_COMIDAS&&!it.observaciones&&(
+                      borderColor:isComidas(it.cuenta, catalogoGastos)&&!it.observaciones?"var(--danger)":"var(--border)"}}/>
+                  {isComidas(it.cuenta, catalogoGastos)&&!it.observaciones&&(
                     <div style={{fontSize:10,color:"var(--danger)",marginTop:2}}>
                       ⚠ Favor de indicar número y nombre de los comensales
                     </div>
