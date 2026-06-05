@@ -1,3 +1,7 @@
+#!/bin/bash
+set -e
+
+cat > 'src/app/(app)/dashboard/page.tsx' << 'FILEEOF'
 "use client"
 import { useState, useEffect, useMemo } from "react"
 import { useRouter } from "next/navigation"
@@ -287,3 +291,9 @@ export default function DashboardPage() {
 }
 
 
+FILEEOF
+
+git add .
+git commit -m "fix: dashboard workflow excludes double-counted anticipos with linked comprobaciones"
+git push
+echo "✓ Done"
