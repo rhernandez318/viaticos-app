@@ -1,3 +1,7 @@
+#!/bin/bash
+set -e
+
+cat > 'src/components/ReportesPage.tsx' << 'FILEEOF'
 "use client"
 import { useState, useEffect, useMemo } from "react"
 import { createClient } from "@/lib/supabase/client"
@@ -671,3 +675,9 @@ export default function ReportesPage() {
   )
 }
 
+FILEEOF
+
+git add .
+git commit -m "feat: unify antiguedad+deudores tab, clickable buckets filter debtors table"
+git push
+echo "✓ Done"
