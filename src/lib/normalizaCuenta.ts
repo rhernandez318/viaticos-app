@@ -1,61 +1,62 @@
-// Maps a guessed account code to the closest available one in the catalog
+// Resolves a semantic tipo marker (like __alimentos__) to the actual account
+// code that exists in the client's catalog.
 
+// Catalog name patterns per semantic type
 const TIPO_CATALOG_PATTERNS: Record<string, RegExp> = {
   alimentos:       /(alimento|comida|comidas|restaurante|consumo|viático|representaci)/i,
-  hospedaje:       /(hotel|hospedaje|alojamiento|nacional|internacional)/i,
+  hospedaje:       /(hotel|hospedaje|alojamiento)/i,
   peaje:           /(peaje|caseta|autopista|telepeaje)/i,
   estacionamiento: /(estacionamiento|parking)/i,
   gasolina:        /(gasolina|combustible|diésel|diesel|gas)/i,
-  taxi:            /(taxi|transporte local|uber|didi|terrestre)/i,
-  aereo:           /(aéreo|vuelo|boleto|avión|aéreo|pasaje.*aéreo|pasaje.*nac|pasaje.*int)/i,
+  taxi:            /(taxi|transporte.*local|uber|didi|terrestre)/i,
+  aereo:           /(aéreo|vuelo|boleto|avión|pasaje)/i,
+  nd:              /(no deducible|nd\b)/i,
 }
 
-// Known SAT/internal code → semantic type
-const KNOWN_CODES: Record<string, string> = {
-  "6122200001": "alimentos",
-  "6122100001": "hospedaje",
-  "6122700001": "peaje",
-  "6122700002": "estacionamiento",
-  "6122600001": "gasolina",
-  "6122900002": "taxi",
-  "6122400001": "aereo",
+function findInCatalog(tipo: string, catalog: Array<{ cuenta: string; nombre: string }>): string | null {
+  const pattern = TIPO_CATALOG_PATTERNS[tipo]
+  if (!pattern) return null
+  return catalog.find(c => pattern.test(c.nombre))?.cuenta ?? null
+}
+
+function getNdAccount(catalog: Array<{ cuenta: string; nombre: string }>): string {
+  return catalog.find(c => TIPO_CATALOG_PATTERNS.nd.test(c.nombre))?.cuenta
+      ?? catalog[catalog.length - 1]?.cuenta
+      ?? "6121200001"
 }
 
 export function normalizaCuenta(
-  guessedCode: string,
+  cuentaOrTipo: string,
   catalog: Array<{ cuenta: string; nombre: string }>
 ): string {
-  if (!catalog?.length) return guessedCode
+  if (!catalog?.length) return cuentaOrTipo
 
-  // 1. Exact match → use it
-  if (catalog.some(c => c.cuenta === guessedCode)) return guessedCode
+  // Already a real code that exists in catalog
+  if (catalog.some(c => c.cuenta === cuentaOrTipo)) return cuentaOrTipo
 
-  // 2. Find semantic type from guessed code
-  const tipo = KNOWN_CODES[guessedCode]
-  if (tipo) {
-    const pattern = TIPO_CATALOG_PATTERNS[tipo]
-    // Search catalog entries for name match
-    const match = catalog.find(c => pattern.test(c.nombre))
-    if (match) {
-      console.log(`[normalizaCuenta] ${guessedCode} → ${match.cuenta} (${match.nombre})`)
-      return match.cuenta
+  // Resolve __tipo__ marker
+  const tipoMatch = cuentaOrTipo.match(/^__(\w+)__$/)
+  if (tipoMatch) {
+    const tipo = tipoMatch[1]
+    const found = findInCatalog(tipo, catalog)
+    if (found) {
+      console.log(`[normalizaCuenta] ${cuentaOrTipo} → ${found}`)
+      return found
     }
+    return getNdAccount(catalog)
   }
 
-  // 3. No match found: return first in catalog (better than wrong default)
-  // but only if it's not a "No Deducibles" catch-all
-  const notNd = catalog.find(c => !/(no deducible|nd)/i.test(c.nombre))
-  return (notNd ?? catalog[0])?.cuenta ?? guessedCode
+  // Unknown code not in catalog → No Deducibles
+  return getNdAccount(catalog)
 }
 
 // Async version: fetches catalog from Supabase if local catalog is empty
 export async function normalizaCuentaAsync(
-  guessedCode: string,
+  cuentaOrTipo: string,
   catalog: Array<{ cuenta: string; nombre: string }>
 ): Promise<string> {
-  if (catalog?.length) return normalizaCuenta(guessedCode, catalog)
+  if (catalog?.length) return normalizaCuenta(cuentaOrTipo, catalog)
 
-  // Catalog not loaded yet — fetch directly
   try {
     const { createClient } = await import("@/lib/supabase/client")
     const sb = createClient()
@@ -64,8 +65,16 @@ export async function normalizaCuentaAsync(
       .select("cuenta,nombre")
       .eq("activo", true)
       .order("cuenta")
-    if (data?.length) return normalizaCuenta(guessedCode, data)
+    if (data?.length) return normalizaCuenta(cuentaOrTipo, data)
   } catch {}
-  return guessedCode
+  return cuentaOrTipo
+}
+
+// For isComidas: check if a catalog account code corresponds to a food account
+export function isCuentaComidas(cuenta: string, catalog: Array<{ cuenta: string; nombre: string }>): boolean {
+  const entry = catalog.find(c => c.cuenta === cuenta)
+  if (entry) return TIPO_CATALOG_PATTERNS.alimentos.test(entry.nombre)
+  // Fallback for __alimentos__ markers
+  return cuenta === "__alimentos__"
 }
 
