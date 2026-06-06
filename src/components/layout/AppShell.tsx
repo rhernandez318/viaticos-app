@@ -10,70 +10,114 @@ import { NotificationBell } from "@/components/ui/NotificationBell"
 import { PushNotifications } from "@/components/ui/PushNotifications"
 import { useState } from "react"
 
-interface NavItem { id: string; label: string; icon: string; href: string }
+interface NavItem  { id: string; label: string; icon: string; href: string }
+interface NavGroup { label?: string; items: NavItem[] }
 
-const NAV_BY_ROL: Record<string, NavItem[]> = {
+const NAV_BY_ROL: Record<string, NavGroup[]> = {
   usuario: [
-    { id:"dashboard",   label:"Inicio",             icon:"🏠", href:"/dashboard" },
-    { id:"anticipo",    label:"Solicitar anticipo",  icon:"💵", href:"/solicitudes/anticipo" },
-    { id:"reembolso",   label:"Reembolso",           icon:"🧾", href:"/solicitudes/reembolso" },
-    { id:"solicitudes", label:"Mis solicitudes",     icon:"📋", href:"/solicitudes" },
-    { id:"perfil",      label:"Mi perfil",           icon:"⚙️", href:"/perfil" },
+    { items: [
+      { id:"dashboard",   label:"Inicio",            icon:"🏠", href:"/dashboard" },
+    ]},
+    { label:"Solicitudes", items: [
+      { id:"anticipo",    label:"Solicitar anticipo", icon:"💵", href:"/solicitudes/anticipo" },
+      { id:"reembolso",   label:"Reembolso",          icon:"🧾", href:"/solicitudes/reembolso" },
+      { id:"solicitudes", label:"Mis solicitudes",    icon:"📋", href:"/solicitudes" },
+    ]},
+    { items: [
+      { id:"perfil",      label:"Mi perfil",          icon:"⚙️", href:"/perfil" },
+    ]},
   ],
   gerente: [
-    { id:"bandeja",      label:"Por aprobar",        icon:"✅", href:"/gerente" },
-    { id:"equipo",       label:"Mi equipo",           icon:"👥", href:"/gerente/equipo" },
-    { id:"anticipo",     label:"Anticipo",            icon:"💵", href:"/solicitudes/anticipo" },
-    { id:"reembolso",    label:"Reembolso",           icon:"🧾", href:"/solicitudes/reembolso" },
-    { id:"comprobacion", label:"Comprobaciones",      icon:"📎", href:"/solicitudes/comprobacion" },
-    { id:"solicitudes",  label:"Mis solicitudes",     icon:"📋", href:"/solicitudes" },
-    { id:"reportes",     label:"Reportes",            icon:"📊", href:"/gerente/reportes" },
-    { id:"perfil",       label:"Mi perfil",           icon:"⚙️", href:"/perfil" },
+    { label:"Flujo de autorizaciones", items: [
+      { id:"bandeja",      label:"Por aprobar",       icon:"✅", href:"/gerente" },
+    ]},
+    { label:"Solicitudes", items: [
+      { id:"anticipo",     label:"Solicitar anticipo", icon:"💵", href:"/solicitudes/anticipo" },
+      { id:"reembolso",    label:"Reembolso",          icon:"🧾", href:"/solicitudes/reembolso" },
+      { id:"comprobacion", label:"Comprobaciones",     icon:"📎", href:"/solicitudes/comprobacion" },
+      { id:"solicitudes",  label:"Mis solicitudes",    icon:"📋", href:"/solicitudes" },
+    ]},
+    { label:"Reportes", items: [
+      { id:"reportes",     label:"Reportes",           icon:"📊", href:"/gerente/reportes" },
+      { id:"equipo",       label:"Mi equipo",          icon:"👥", href:"/gerente/equipo" },
+    ]},
+    { items: [
+      { id:"perfil",       label:"Mi perfil",          icon:"⚙️", href:"/perfil" },
+    ]},
   ],
   tesoreria: [
-    { id:"workflow",  label:"Workflow",         icon:"🗂", href:"/dashboard" },
-    { id:"todas",     label:"Todas las sol.",   icon:"📂", href:"/solicitudes/todas" },
-    { id:"liberar",   label:"Liberar pagos",    icon:"💵", href:"/tesoreria" },
-    { id:"pagados",  label:"Pagados",        icon:"✅", href:"/tesoreria/pagados" },
-    { id:"deudores", label:"Deudores",       icon:"⚑",  href:"/tesoreria/deudores" },
-    { id:"reportes", label:"Reportes",       icon:"📊", href:"/tesoreria/reportes" },
-    { id:"perfil",   label:"Mi perfil",      icon:"⚙️", href:"/perfil" },
+    { items: [
+      { id:"workflow",  label:"Workflow",              icon:"🗂", href:"/dashboard" },
+    ]},
+    { label:"Gestión", items: [
+      { id:"todas",     label:"Todas las sol.",        icon:"📂", href:"/solicitudes/todas" },
+      { id:"liberar",   label:"Liberar pagos",         icon:"💵", href:"/tesoreria" },
+      { id:"pagados",   label:"Pagados",               icon:"✅", href:"/tesoreria/pagados" },
+      { id:"deudores",  label:"Deudores",              icon:"⚑",  href:"/tesoreria/deudores" },
+    ]},
+    { label:"Reportes", items: [
+      { id:"reportes",  label:"Reportes",              icon:"📊", href:"/tesoreria/reportes" },
+    ]},
+    { items: [
+      { id:"perfil",    label:"Mi perfil",             icon:"⚙️", href:"/perfil" },
+    ]},
   ],
   contador: [
-    { id:"workflow",         label:"Workflow",             icon:"🗂", href:"/dashboard" },
-    { id:"todas",            label:"Todas las sol.",      icon:"📂", href:"/solicitudes/todas" },
-    { id:"polizas",          label:"Pólizas contables",   icon:"📒", href:"/contador/polizas" },
-    { id:"trazabilidad",     label:"Trazabilidad",       icon:"🔍", href:"/contador/trazabilidad" },
-    { id:"validacion-sat",   label:"Validación SAT",     icon:"🛡", href:"/contador/validacion-sat" },
-    { id:"conciliacion-sat", label:"Conciliación SAT",   icon:"📊", href:"/contador/conciliacion-sat" },
-    { id:"reportes",         label:"Reportes",           icon:"📊", href:"/contador/reportes" },
-    { id:"catalogo",         label:"Catálogo",           icon:"📋", href:"/contador/catalogo" },
-    { id:"perfil",           label:"Mi perfil",          icon:"⚙️", href:"/perfil" },
+    { items: [
+      { id:"workflow",         label:"Workflow",             icon:"🗂", href:"/dashboard" },
+    ]},
+    { label:"Gestión", items: [
+      { id:"todas",            label:"Todas las sol.",       icon:"📂", href:"/solicitudes/todas" },
+      { id:"polizas",          label:"Pólizas contables",    icon:"📒", href:"/contador/polizas" },
+      { id:"trazabilidad",     label:"Trazabilidad",         icon:"🔍", href:"/contador/trazabilidad" },
+      { id:"validacion-sat",   label:"Validación SAT",       icon:"🛡", href:"/contador/validacion-sat" },
+      { id:"conciliacion-sat", label:"Conciliación SAT",     icon:"📊", href:"/contador/conciliacion-sat" },
+      { id:"catalogo",         label:"Catálogo",             icon:"📋", href:"/contador/catalogo" },
+    ]},
+    { label:"Reportes", items: [
+      { id:"reportes",         label:"Reportes",             icon:"📊", href:"/contador/reportes" },
+    ]},
+    { items: [
+      { id:"perfil",           label:"Mi perfil",            icon:"⚙️", href:"/perfil" },
+    ]},
   ],
   admin: [
-    { id:"dashboard",    label:"Inicio",           icon:"🏠", href:"/dashboard" },
-    { id:"bandeja",      label:"Por aprobar",        icon:"✅", href:"/gerente" },
-    { id:"validar",      label:"Validar (Admin)",    icon:"🔐", href:"/admin/validar" },
-    { id:"liberar",      label:"Liberar pagos",      icon:"💵", href:"/tesoreria" },
-    { id:"anticipo",     label:"Anticipo",          icon:"💵", href:"/solicitudes/anticipo" },
-    { id:"reembolso",    label:"Reembolso",         icon:"🧾", href:"/solicitudes/reembolso" },
-    { id:"comprobacion", label:"Comprobaciones",    icon:"📎", href:"/solicitudes/comprobacion" },
-    { id:"solicitudes",  label:"Mis solicitudes",   icon:"📋", href:"/solicitudes" },
-    { id:"todas",         label:"Todas las sol.",    icon:"📂", href:"/solicitudes/todas" },
-    { id:"usuarios",     label:"Usuarios",          icon:"👥", href:"/admin/usuarios" },
-    { id:"centros",      label:"Centros",           icon:"🏢", href:"/admin/centros" },
-    { id:"catalogo",     label:"Catálogo",           icon:"📋", href:"/admin/catalogo" },
-    { id:"limites",      label:"Límites de gasto",   icon:"🚦", href:"/admin/limites" },
-    { id:"reportes",     label:"Reportes",          icon:"📊", href:"/admin/reportes" },
-    { id:"polizas",      label:"Pólizas",           icon:"📒", href:"/contador/polizas" },
-    { id:"perfil",       label:"Mi perfil",         icon:"⚙️", href:"/perfil" },
+    { items: [
+      { id:"dashboard",    label:"Inicio",                   icon:"🏠", href:"/dashboard" },
+    ]},
+    { label:"Flujo de autorizaciones", items: [
+      { id:"bandeja",      label:"Por aprobar",              icon:"✅", href:"/gerente" },
+      { id:"validar",      label:"Validar (Admin)",          icon:"🔐", href:"/admin/validar" },
+      { id:"liberar",      label:"Liberar pagos",            icon:"💵", href:"/tesoreria" },
+    ]},
+    { label:"Solicitudes", items: [
+      { id:"anticipo",     label:"Solicitar anticipo",       icon:"💵", href:"/solicitudes/anticipo" },
+      { id:"reembolso",    label:"Reembolso",                icon:"🧾", href:"/solicitudes/reembolso" },
+      { id:"comprobacion", label:"Comprobaciones",           icon:"📎", href:"/solicitudes/comprobacion" },
+      { id:"solicitudes",  label:"Mis solicitudes",          icon:"📋", href:"/solicitudes" },
+      { id:"todas",        label:"Todas las sol.",           icon:"📂", href:"/solicitudes/todas" },
+    ]},
+    { label:"Gestión", items: [
+      { id:"usuarios",     label:"Usuarios",                 icon:"👥", href:"/admin/usuarios" },
+      { id:"centros",      label:"Centros",                  icon:"🏢", href:"/admin/centros" },
+      { id:"catalogo",     label:"Catálogo",                 icon:"📋", href:"/admin/catalogo" },
+      { id:"limites",      label:"Límites de gasto",         icon:"🚦", href:"/admin/limites" },
+      { id:"polizas",      label:"Pólizas",                  icon:"📒", href:"/contador/polizas" },
+    ]},
+    { label:"Reportes", items: [
+      { id:"reportes",     label:"Reportes",                 icon:"📊", href:"/admin/reportes" },
+    ]},
+    { items: [
+      { id:"perfil",       label:"Mi perfil",                icon:"⚙️", href:"/perfil" },
+    ]},
   ],
 }
 
 export default function AppShell({ user, children }: { user: any; children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
-  const navItems = NAV_BY_ROL[user.rol] || []
+  const navGroups = NAV_BY_ROL[user.rol] || []
+  const navItems = navGroups.flatMap(g => g.items)
   const [showUserMenu, setShowUserMenu] = useState(false)
 
   const isActive = (href: string) =>
@@ -102,13 +146,29 @@ export default function AppShell({ user, children }: { user: any; children: Reac
           </div>
         </div>
 
-        <nav style={{ flex:1, display:"flex", flexDirection:"column", gap:1 }}>
-          {navItems.map(item => (
-            <Link key={item.id} href={item.href}
-              className={`nav-item ${isActive(item.href) ? "active" : ""}`}>
-              <span style={{ fontSize:15, width:20, textAlign:"center" }}>{item.icon}</span>
-              {item.label}
-            </Link>
+        <nav style={{ flex:1, display:"flex", flexDirection:"column", overflowY:"auto" }}>
+          {navGroups.map((group, gi) => (
+            <div key={gi} style={{ marginBottom: group.label ? 4 : 0 }}>
+              {group.label && (
+                <div style={{
+                  fontSize:9, fontWeight:700, textTransform:"uppercase",
+                  letterSpacing:"0.1em", color:"var(--text-3)",
+                  padding:"10px 14px 4px", userSelect:"none",
+                }}>
+                  {group.label}
+                </div>
+              )}
+              {group.items.map(item => (
+                <Link key={item.id} href={item.href}
+                  className={`nav-item ${isActive(item.href) ? "active" : ""}`}>
+                  <span style={{ fontSize:15, width:20, textAlign:"center" }}>{item.icon}</span>
+                  {item.label}
+                </Link>
+              ))}
+              {gi < navGroups.length - 1 && group.label && (
+                <div style={{ height:1, background:"var(--border)", margin:"6px 12px 2px" }}/>
+              )}
+            </div>
           ))}
         </nav>
 
