@@ -1,3 +1,7 @@
+#!/bin/bash
+set -e
+
+cat > 'src/components/ReportesPage.tsx' << 'FILEEOF'
 "use client"
 import { useState, useEffect, useMemo } from "react"
 import { createClient } from "@/lib/supabase/client"
@@ -590,3 +594,9 @@ export default function ReportesPage() {
   )
 }
 
+FILEEOF
+
+git add .
+git commit -m "fix: porArea+porUsuario dedup anticipos with linked CMP (no more 30+32 double counting)"
+git push
+echo "✓ Done"
