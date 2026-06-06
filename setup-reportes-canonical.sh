@@ -1,3 +1,7 @@
+#!/bin/bash
+set -e
+
+cat > 'src/components/ReportesPage.tsx' << 'FILEEOF'
 "use client"
 import { useState, useEffect, useMemo } from "react"
 import { createClient } from "@/lib/supabase/client"
@@ -586,3 +590,9 @@ export default function ReportesPage() {
   )
 }
 
+FILEEOF
+
+git add .
+git commit -m "fix: REPORTES canonical version — KPI dedup, centro nombre, porCuenta+porUsuario tabs, filtros"
+git push
+echo "✓ Done — esta es la versión canónica de ReportesPage"
