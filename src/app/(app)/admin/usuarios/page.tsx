@@ -47,6 +47,7 @@ export default function AdminUsuariosPage() {
 
   const guardar = async () => {
     if (!editando) return
+    if (!editando.centro_id) { alert("⚠ Debe asignar un Centro de beneficio al usuario"); return }
     setGuardando(true)
     const sb = createClient()
     const row = {
@@ -63,6 +64,8 @@ export default function AdminUsuariosPage() {
 
   const crearUsuario = async () => {
     const { nombre,correo,password,rol,centro_id,gerente_id,division } = nuevoForm
+    if (!centro_id) { alert("⚠ Debe asignar un Centro de beneficio al usuario"); return }
+    if (!nombre.trim() || !correo.trim() || !password) { alert("⚠ Nombre, correo y contraseña son obligatorios"); return }
     if (!nombre.trim()||!correo.trim()||!password.trim()) { showToast("⚠ Nombre, correo y contraseña requeridos"); return }
     setGuardando(true)
     try {
@@ -150,8 +153,8 @@ export default function AdminUsuariosPage() {
               {DIVISIONES.map(d=><option key={d}>{d}</option>)}
             </select>
           </FormField>
-          <FormField label="Centro de beneficio">
-            <select className="select" value={nuevoForm.centro_id} onChange={e=>setNuevoForm({...nuevoForm,centro_id:e.target.value})}>
+          <FormField label="Centro de beneficio *">
+            <select className="select" required value={nuevoForm.centro_id} onChange={e=>setNuevoForm({...nuevoForm,centro_id:e.target.value})} style={{borderColor:!nuevoForm.centro_id?"var(--danger)":"var(--border)"}}>
               <option value="">— Sin centro —</option>
               {centros.map((c:any)=><option key={c.id} value={c.id}>{c.id} · {c.nombre}</option>)}
             </select>
@@ -185,7 +188,7 @@ export default function AdminUsuariosPage() {
             </select>
           </FormField>
           <FormField label="Centro">
-            <select className="select" value={editando.centro_id||""} onChange={e=>setEditando({...editando,centro_id:e.target.value||null})}>
+            <select className="select" required value={editando.centro_id||""} onChange={e=>setEditando({...editando,centro_id:e.target.value||null})} style={{borderColor:!editando.centro_id?"var(--danger)":"var(--border)"}}>
               <option value="">— Sin centro —</option>
               {centros.map((c:any)=><option key={c.id} value={c.id}>{c.id} · {c.nombre}</option>)}
             </select>
@@ -208,11 +211,11 @@ export default function AdminUsuariosPage() {
       <input className="input" placeholder="Buscar por nombre, correo o rol…" value={busqueda}
         onChange={e=>setBusqueda(e.target.value)} style={{marginBottom:14,maxWidth:380}}/>
 
-      <div className="card" style={{padding:0,overflow:"auto"}}>
+      <div className="card" style={{padding:0,overflow:"hidden"}}>
         {loading ? (
           <div style={{padding:40,textAlign:"center",color:"var(--text-3)"}}>Cargando…</div>
         ) : (
-          <table className="t" style={{minWidth:700}}>
+          <table className="t">
             <thead><tr><th>Usuario</th><th>Correo</th><th>Rol</th><th>División</th><th>Centro</th><th></th></tr></thead>
             <tbody>
               {filtrados.map((u:any)=>(
