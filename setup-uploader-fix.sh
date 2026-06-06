@@ -1,3 +1,7 @@
+#!/bin/bash
+set -e
+
+cat > 'src/components/ui/CompUploader.tsx' << 'FILEEOF'
 "use client"
 import { useRef, useCallback, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
@@ -198,3 +202,9 @@ export function CompUploader({ solicitudId, catalogoGastos, onAdd }: Props) {
 }
 
 
+FILEEOF
+
+git add .
+git commit -m "fix: CompUploader normalizes XML+OCR account codes against real catalog"
+git push
+echo "✓ Done. After deploy, recarga el sitio (Ctrl+Shift+R o borrar caché en celular)"
