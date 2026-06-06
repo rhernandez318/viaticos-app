@@ -1,4 +1,4 @@
-const CACHE = "viaticos-gz-v4"
+const CACHE = "viaticos-gz-v5"
 const PRECACHE = ["/", "/login", "/icon-192.png", "/manifest.json"]
 
 self.addEventListener("install", e => {
@@ -46,4 +46,5 @@ self.addEventListener("fetch", e => {
       .catch(() => caches.match(e.request).then(r => r || Response.error()))
   )
 })
+
 

@@ -51,12 +51,12 @@ export function normalizaCuenta(
 }
 
 // Async version: fetches catalog from Supabase if local catalog is empty
+// Debug: log when catalog is used for normalization
 export async function normalizaCuentaAsync(
   cuentaOrTipo: string,
   catalog: Array<{ cuenta: string; nombre: string }>
 ): Promise<string> {
-  if (catalog?.length) return normalizaCuenta(cuentaOrTipo, catalog)
-
+  // Always fetch fresh from Supabase to avoid stale catalog state
   try {
     const { createClient } = await import("@/lib/supabase/client")
     const sb = createClient()
@@ -65,8 +65,15 @@ export async function normalizaCuentaAsync(
       .select("cuenta,nombre")
       .eq("activo", true)
       .order("cuenta")
-    if (data?.length) return normalizaCuenta(cuentaOrTipo, data)
-  } catch {}
+    if (data?.length) {
+      console.log("[normalizaCuenta] catalog loaded:", data.length, "accounts")
+      return normalizaCuenta(cuentaOrTipo, data)
+    }
+  } catch (e) {
+    console.warn("[normalizaCuenta] catalog fetch failed:", e)
+  }
+  // Fallback to passed catalog
+  if (catalog?.length) return normalizaCuenta(cuentaOrTipo, catalog)
   return cuentaOrTipo
 }
 

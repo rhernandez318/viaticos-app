@@ -103,13 +103,13 @@ export default function MisSolicitudesPage() {
       </div>
 
       {/* Tabla */}
-      <div className="card" style={{ padding: 0, overflow: "auto" }}>
+      <div className="card" style={{ padding: 0, overflow: "hidden" }}>
         {loading ? (
           <div style={{ padding: 40, textAlign: "center", color: "var(--text-3)" }}>Cargando solicitudes…</div>
         ) : filtradas.length === 0 ? (
           <div style={{ padding: 40, textAlign: "center", color: "var(--text-3)" }}>Sin solicitudes con ese filtro</div>
         ) : (
-          <table className="t" style={{minWidth:800}}>
+          <table className="t">
             <thead>
               <tr>
                 <th>Folio</th><th>Tipo</th><th>Concepto</th>

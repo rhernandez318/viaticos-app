@@ -55,31 +55,19 @@ export default function DashboardPage() {
     })
   },[])
 
-  // Anticipos that have a linked comprobacion - show comp, not the anticipo
-  const anticiposConComp = useMemo(() =>
-    new Set(solicitudes.filter(s => s.anticipo_ref).map(s => s.anticipo_ref)),
-  [solicitudes])
-
   const byStatus = useMemo(() => {
     const map: Record<string, any[]> = {}
     Object.keys(STATUS_CONFIG).forEach(s => map[s]=[])
-    solicitudes.forEach(s => {
-      // Hide comprobado/liberado anticipos that have linked comprobaciones
-      // (their comprobacion is already in the map with the real amount)
-      if (s.tipo === "anticipo" && anticiposConComp.has(s.id)) return
-      if (map[s.status]) map[s.status].push(s)
-    })
+    solicitudes.forEach(s => { if (map[s.status]) map[s.status].push(s) })
     return map
-  }, [solicitudes, anticiposConComp])
+  }, [solicitudes])
 
   const findUser = (id:string) => usuarios.find(u=>u.id===id)
 
   const drillItems = activeStatus ? byStatus[activeStatus] : []
 
   const VALIDOS = ["liberado","comprobado"]  // KPIs: only settled amounts
-  const solicitudesValidas = solicitudes.filter(s =>
-    VALIDOS.includes(s.status) && !(s.tipo==="anticipo" && anticiposConComp.has(s.id))
-  )
+  const solicitudesValidas = solicitudes.filter(s => VALIDOS.includes(s.status))
   const totalMonto = solicitudesValidas.reduce((a,s)=>a+parseFloat(s.monto||0),0)
   const saldoPendiente = solicitudes
     .filter(s=>["liberado","parcial"].includes(s.status)&&s.tipo==="anticipo"&&parseFloat(s.saldo_pendiente)>0)
@@ -260,6 +248,19 @@ export default function DashboardPage() {
                             {s.status==="validado"&&(userRol==="tesoreria"||userRol==="admin")&&(
                               <button className="btn sm primary" onClick={()=>router.push("/tesoreria")}>
                                 Liberar pago
+                              </button>
+                            )}
+                            {s.status==="liberado"&&s.tipo==="anticipo"&&(
+                              <button className="btn sm primary"
+                                onClick={()=>router.push(`/solicitudes/comprobacion?anticipo=${s.id}`)}>
+                                📎 Comprobar →
+                              </button>
+                            )}
+                            {s.status==="parcial"&&s.tipo==="anticipo"&&(
+                              <button className="btn sm"
+                                style={{background:"var(--warn)",border:"none",color:"#111",fontWeight:600}}
+                                onClick={()=>router.push(`/solicitudes/comprobacion?anticipo=${s.id}`)}>
+                                📎 Comprobar saldo →
                               </button>
                             )}
                           </div>
