@@ -1,3 +1,7 @@
+#!/bin/bash
+set -e
+
+cat > 'src/components/ReportesPage.tsx' << 'FILEEOF'
 "use client"
 import { useState, useEffect, useMemo } from "react"
 import { createClient } from "@/lib/supabase/client"
@@ -643,3 +647,9 @@ export default function ReportesPage() {
 }
 
 
+FILEEOF
+
+git add .
+git commit -m "feat: reportes tab por cuenta + por usuario, filtros mes/area en area+cuenta+usuario"
+git push
+echo "✓ Done"
