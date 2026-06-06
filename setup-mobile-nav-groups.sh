@@ -1,3 +1,7 @@
+#!/bin/bash
+set -e
+
+cat > 'src/components/layout/AppShell.tsx' << 'FILEEOF'
 "use client"
 
 import { usePathname } from "next/navigation"
@@ -310,3 +314,9 @@ export default function AppShell({ user, children }: { user: any; children: Reac
 }
 
 
+FILEEOF
+
+git add .
+git commit -m "feat: grouped nav also in mobile drawer menu"
+git push
+echo "✓ Done"
