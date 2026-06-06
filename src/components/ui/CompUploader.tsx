@@ -3,6 +3,7 @@ import { useRef, useCallback, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { parseCFDIXml } from "@/lib/cfdi"
 import { normalizaCuentaAsync } from "@/lib/normalizaCuenta"
+import { getDiasMaxFactura } from "@/lib/ajustes"
 import type { CfdItem } from "@/types"
 
 const CUENTA_PATTERNS: [RegExp, string][] = [
@@ -124,7 +125,26 @@ export function CompUploader({ solicitudId, catalogoGastos, onAdd }: Props) {
         // Normalize tipo marker (__alimentos__) to real catalog code
         parsed.cuenta = await normalizaCuentaAsync(parsed.cuenta, catalogoGastos)
         const motivoDup = await checkDuplicate(parsed.uuid)
-        newItems.push({ ...parsed, duplicado: !!motivoDup, motivoDup: motivoDup || undefined })
+
+        // Validate factura age — vencida si > diasMax días
+        let vencida = false
+        let motivoVencida: string | undefined
+        if (parsed.fechaEmision) {
+          const diasMax = await getDiasMaxFactura()
+          const fEmi = new Date(parsed.fechaEmision)
+          const diff = Math.floor((Date.now() - fEmi.getTime()) / 86400000)
+          if (diff > diasMax) {
+            vencida = true
+            motivoVencida = `Factura de hace ${diff} días (máx ${diasMax})`
+          }
+        }
+
+        newItems.push({
+          ...parsed,
+          duplicado: !!motivoDup || vencida,
+          motivoDup: motivoDup || motivoVencida || undefined,
+          ...(vencida ? { vencida: true, motivoVencida } as any : {}),
+        })
 
       } else if (isImg) {
         // Run OCR on images (tickets, receipts)

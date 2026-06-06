@@ -64,7 +64,8 @@ export function parseCFDIXml(xmlText: string): CfdItem | null {
     if (doc.querySelector("parsererror")) return null
 
     const comp = qn(doc, "Comprobante") || doc.documentElement
-    const total    = parseFloat(attr(comp, "Total", "total") || "0")
+    const total       = parseFloat(attr(comp, "Total", "total") || "0")
+    const fechaEmision = attr(comp, "Fecha", "fecha") || ""
     const subtotal = parseFloat(attr(comp, "SubTotal", "Subtotal", "subtotal") || "0")
 
     const emisorEl  = qn(doc, "Emisor")
@@ -112,6 +113,7 @@ export function parseCFDIXml(xmlText: string): CfdItem | null {
       archivoUrl: null,
       rfcEmisor,
       rfcReceptor,
+      fechaEmision,
     } as CfdItem & { uuidFull: string }
   } catch {
     return null

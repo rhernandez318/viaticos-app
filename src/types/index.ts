@@ -37,6 +37,7 @@ export interface CuentaContable {
 }
 
 export interface CfdItem {
+  fechaEmision?: string  // ISO date from CFDI
   id?: string
   uuid: string
   emisor: string

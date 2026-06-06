@@ -7,6 +7,7 @@ import { parseCFDIXml } from "@/lib/cfdi"
 import { useCatalogos } from "@/hooks/useCatalogos"
 import { isComidas } from "@/lib/cuentaComidas"
 import { normalizaCuentaAsync } from "@/lib/normalizaCuenta"
+import { getDiasMaxFactura } from "@/lib/ajustes"
 import { notifyUsers } from "@/lib/notify"
 import type { CfdItem } from "@/types"
 
@@ -66,10 +67,24 @@ export default function NuevoReembolsoPage() {
         const parsed = parseCFDIXml(text)
         if (!parsed) { showToast(`XML inválido: ${file.name}`, false); continue }
         parsed.archivoUrl = archivoUrl
-        // Normalize parsed account code to one that exists in the catalog
         parsed.cuenta = await normalizaCuentaAsync(parsed.cuenta, catalogoGastos)
         const motivoDup = await checkDuplicado(parsed.uuid)
-        setItems(prev => [...prev, { ...parsed, duplicado: !!motivoDup, motivoDup: motivoDup || undefined }])
+
+        let vencida = false; let motivoVencida: string | undefined
+        if (parsed.fechaEmision) {
+          const diasMax = await getDiasMaxFactura()
+          const fEmi = new Date(parsed.fechaEmision)
+          const diff = Math.floor((Date.now() - fEmi.getTime()) / 86400000)
+          if (diff > diasMax) {
+            vencida = true; motivoVencida = `Factura de hace ${diff} días (máx ${diasMax})`
+          }
+        }
+        setItems(prev => [...prev, {
+          ...parsed,
+          duplicado: !!motivoDup || vencida,
+          motivoDup: motivoDup || motivoVencida || undefined,
+          ...(vencida ? { vencida: true } as any : {}),
+        } as ItemConObs])
       } else {
         setItems(prev => [...prev, {
           uuid: "", emisor: file.name, concepto: file.name,
@@ -191,7 +206,14 @@ export default function NuevoReembolsoPage() {
                   <tr key={i} style={{ ...(it.duplicado ? { textDecoration:"line-through", opacity:0.5 } : {}) }}>
                     <td style={{ fontSize:12 }}>
                       {it.emisor}
-                      {it.duplicado && <span style={{ fontSize:10, color:"var(--danger)", marginLeft:6 }}>⚠ {it.motivoDup}</span>}
+                      {it.duplicado && (
+                        <span style={{
+                          fontSize:10, fontWeight:600, marginLeft:6,
+                          color: (it as any).vencida ? "#fbbf24" : "var(--danger)",
+                        }}>
+                          {(it as any).vencida ? "⏰" : "⚠"} {it.motivoDup}
+                        </span>
+                      )}
                     </td>
                     <td style={{ fontSize:12 }}>{it.concepto}</td>
                     <td>

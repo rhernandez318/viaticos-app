@@ -195,7 +195,14 @@ function NuevaComprobacionInner() {
                   <td style={{ fontSize: 12 }}>{it.emisor}</td>
                   <td style={{ fontSize: 11, maxWidth: 160, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {it.concepto}
-                    {it.duplicado && <span style={{ color: "var(--danger)", fontSize: 10, marginLeft: 6 }}>⚠ {it.motivoDup}</span>}
+                    {it.duplicado && (
+                      <span style={{
+                        color: (it as any).vencida ? "#fbbf24" : "var(--danger)",
+                        fontSize: 10, marginLeft: 6, fontWeight: 600,
+                      }}>
+                        {(it as any).vencida ? "⏰" : "⚠"} {it.motivoDup}
+                      </span>
+                    )}
                   </td>
                   <td>
                     {it.duplicado ? (
