@@ -57,8 +57,13 @@ export default function TesoreriaLiberarPage() {
     for (const id of Array.from(selected)) {
       const s = solicitudes.find(x => x.id === id)
       if (!s) continue
-      // Comprobaciones sin anticipo ref van a comprobado; todo lo demás a liberado
-      const newStatus = (s.tipo === "comprobacion" && !s.anticipoRef) ? "comprobado" : "liberado"
+      // Comprobaciones sin anticipo ref → comprobado (ya tienen factura).
+      // Reembolsos liberados → comprobado (representan gasto ya hecho, no requieren comprobación posterior).
+      // Anticipos → liberado (deben comprobarse después).
+      const newStatus =
+        (s.tipo === "comprobacion" && !s.anticipoRef) || s.tipo === "reembolso"
+          ? "comprobado"
+          : "liberado"
       await sb.from("solicitudes").update({ status: newStatus }).eq("id", id)
       if (s.tipo === "comprobacion" && s.anticipoRef) {
         const { data: comps } = await sb.from("solicitudes")
@@ -196,4 +201,5 @@ export default function TesoreriaLiberarPage() {
     </>
   )
 }
+
 
