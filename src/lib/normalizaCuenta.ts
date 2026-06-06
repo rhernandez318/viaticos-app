@@ -1,26 +1,16 @@
 // Maps a guessed account code to the closest available one in the catalog
 
-const TIPO_PATTERNS: [RegExp, string][] = [
-  [/(alimento|comida|restaurante|consumo|viático|food)/i, "alimentos"],
-  [/(hotel|hospedaje|alojamiento)/i,                      "hospedaje"],
-  [/(peaje|caseta|autopista|telepeaje)/i,                 "peaje"],
-  [/(estacionamiento|parking)/i,                          "estacionamiento"],
-  [/(gasolina|combustible|diesel)/i,                      "gasolina"],
-  [/(taxi|uber|didi|transporte local)/i,                  "taxi"],
-  [/(aéreo|vuelo|boleto|avión|pasaje)/i,                  "aereo"],
-]
-
 const TIPO_CATALOG_PATTERNS: Record<string, RegExp> = {
-  alimentos:     /(alimento|comida|restaurante|consumo|viático|representaci)/i,
-  hospedaje:     /(hotel|hospedaje|alojamiento)/i,
-  peaje:         /(peaje|caseta|autopista|telepeaje)/i,
+  alimentos:       /(alimento|comida|comidas|restaurante|consumo|viático|representaci)/i,
+  hospedaje:       /(hotel|hospedaje|alojamiento|nacional|internacional)/i,
+  peaje:           /(peaje|caseta|autopista|telepeaje)/i,
   estacionamiento: /(estacionamiento|parking)/i,
-  gasolina:      /(gasolina|combustible|diésel|diesel)/i,
-  taxi:          /(taxi|transporte local|uber|didi)/i,
-  aereo:         /(aéreo|vuelo|boleto|avión|pasaje.*aéreo|pasaje nacional|pasaje inter)/i,
+  gasolina:        /(gasolina|combustible|diésel|diesel|gas)/i,
+  taxi:            /(taxi|transporte local|uber|didi|terrestre)/i,
+  aereo:           /(aéreo|vuelo|boleto|avión|aéreo|pasaje.*aéreo|pasaje.*nac|pasaje.*int)/i,
 }
 
-// Known internal-code → semantic type
+// Known SAT/internal code → semantic type
 const KNOWN_CODES: Record<string, string> = {
   "6122200001": "alimentos",
   "6122100001": "hospedaje",
@@ -35,22 +25,47 @@ export function normalizaCuenta(
   guessedCode: string,
   catalog: Array<{ cuenta: string; nombre: string }>
 ): string {
-  if (!catalog.length) return guessedCode
+  if (!catalog?.length) return guessedCode
 
-  // If guessed code exists in catalog → use it directly
+  // 1. Exact match → use it
   if (catalog.some(c => c.cuenta === guessedCode)) return guessedCode
 
-  // Determine semantic type from guessed code
+  // 2. Find semantic type from guessed code
   const tipo = KNOWN_CODES[guessedCode]
   if (tipo) {
     const pattern = TIPO_CATALOG_PATTERNS[tipo]
-    if (pattern) {
-      const match = catalog.find(c => pattern.test(c.nombre))
-      if (match) return match.cuenta
+    // Search catalog entries for name match
+    const match = catalog.find(c => pattern.test(c.nombre))
+    if (match) {
+      console.log(`[normalizaCuenta] ${guessedCode} → ${match.cuenta} (${match.nombre})`)
+      return match.cuenta
     }
   }
 
-  // Last resort: return first non-generic account or first in catalog
-  return catalog[0]?.cuenta ?? guessedCode
+  // 3. No match found: return first in catalog (better than wrong default)
+  // but only if it's not a "No Deducibles" catch-all
+  const notNd = catalog.find(c => !/(no deducible|nd)/i.test(c.nombre))
+  return (notNd ?? catalog[0])?.cuenta ?? guessedCode
+}
+
+// Async version: fetches catalog from Supabase if local catalog is empty
+export async function normalizaCuentaAsync(
+  guessedCode: string,
+  catalog: Array<{ cuenta: string; nombre: string }>
+): Promise<string> {
+  if (catalog?.length) return normalizaCuenta(guessedCode, catalog)
+
+  // Catalog not loaded yet — fetch directly
+  try {
+    const { createClient } = await import("@/lib/supabase/client")
+    const sb = createClient()
+    const { data } = await sb
+      .from("cuentas_contables")
+      .select("cuenta,nombre")
+      .eq("activo", true)
+      .order("cuenta")
+    if (data?.length) return normalizaCuenta(guessedCode, data)
+  } catch {}
+  return guessedCode
 }
 
