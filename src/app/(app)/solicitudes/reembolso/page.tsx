@@ -1,4 +1,5 @@
 "use client"
+import { AlertTriangle, AlarmClock } from "lucide-react"
 import { useState, useRef, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
@@ -241,8 +242,7 @@ export default function NuevoReembolsoPage() {
                               background: isComidas(it.cuenta, catalogoGastos) && !it.observaciones ? "var(--danger-soft)" : "var(--surface)",
                             }}/>
                           {isComidas(it.cuenta, catalogoGastos) && !it.observaciones && (
-                            <div style={{ fontSize:10, color:"var(--danger)", marginTop:2 }}>
-                              ⚠ Favor de indicar número y nombre de los comensales
+                            <div style={{ fontSize:10, color:"var(--danger)", marginTop:2 }}><AlertTriangle size={12} strokeWidth={2} style={{verticalAlign:"middle",marginRight:3}}/>Favor de indicar número y nombre de los comensales
                             </div>
                           )}
                         </div>
