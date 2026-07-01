@@ -1,0 +1,27 @@
+{
+  "name": "viaticos-desktop",
+  "version": "0.1.0",
+  "description": "Viáticos — Aplicación de escritorio",
+  "main": "electron/main.js",
+  "author": {
+    "name": "Grupo Zapata",
+    "email": "soporte@viaticos.local"
+  },
+  "scripts": {
+    "dev": "concurrently \"npm run dev:next\" \"wait-on http://localhost:3847/login && electron .\"",
+    "dev:next": "cd nextjs-app && npm run dev -- -p 3847",
+    "start": "electron .",
+    "build:next": "cd nextjs-app && npm run build",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "dist:win": "electron-builder --win",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "electron": "^32.0.0",
+    "electron-builder": "^25.0.0",
+    "wait-on": "^7.2.0"
+  }
+}
+

@@ -1,0 +1,62 @@
+{
+  "appId": "com.gzapata.viaticos",
+  "productName": "Viáticos",
+  "copyright": "Copyright © 2026 Grupo Zapata",
+  "directories": {
+    "output": "dist",
+    "buildResources": "build"
+  },
+  "files": [
+    "electron/**/*",
+    "build/**/*",
+    "package.json"
+  ],
+  "extraResources": [
+    {
+      "from": "nextjs-app/.next/standalone",
+      "to": "nextjs-app",
+      "filter": ["**/*"]
+    },
+    {
+      "from": "nextjs-app/.next/static",
+      "to": "nextjs-app/.next/static",
+      "filter": ["**/*"]
+    },
+    {
+      "from": "nextjs-app/public",
+      "to": "nextjs-app/public",
+      "filter": ["**/*"]
+    }
+  ],
+  "win": {
+    "target": [
+      { "target": "nsis", "arch": ["x64"] }
+    ],
+    "icon": "build/icon.ico",
+    "requestedExecutionLevel": "asInvoker"
+  },
+  "nsis": {
+    "oneClick": false,
+    "perMachine": false,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "Viáticos",
+    "installerLanguages": ["es_ES"],
+    "language": "3082",
+    "installerSidebar": "build/installer-sidebar.bmp",
+    "uninstallerSidebar": "build/installer-sidebar.bmp",
+    "include": "installer/installer-script.nsh"
+  },
+  "mac": {
+    "target": "dmg",
+    "icon": "build/icon.icns",
+    "category": "public.app-category.business"
+  },
+  "linux": {
+    "target": ["AppImage", "deb"],
+    "icon": "build/icon.png",
+    "category": "Office"
+  }
+}
+
