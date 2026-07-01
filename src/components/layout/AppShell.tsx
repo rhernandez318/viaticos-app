@@ -344,3 +344,5 @@ export function AppShell({ user, children }: Props) {
   )
 }
 
+
+export default AppShell
