@@ -1,4 +1,6 @@
 "use client"
+import type { LucideIcon } from "lucide-react"
+import { BarChart3, Building2, BookOpen, User, Clock, FileX, Calendar } from "lucide-react"
 import { useState, useEffect, useMemo } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { fmtMXN, fmtFecha } from "@/lib/format"
@@ -255,12 +257,12 @@ export default function ReportesPage() {
     return buckets
   }, [solicitudes])
 
-  const TABS: { id: Tab; label: string; icon: string }[] = [
-    { id:"resumen",   label:"Resumen",       icon:"📊" },
-    { id:"area",      label:"Por área",      icon:"🏢" },
-    { id:"cuenta",    label:"Por cuenta",    icon:"📒" },
-    { id:"usuario",   label:"Por usuario",   icon:"👤" },
-    { id:"antiguedad",label:"Antigüedad",    icon:"⏱" },
+  const TABS: { id: Tab; label: string; icon: LucideIcon }[] = [
+    { id:"resumen",   label:"Resumen",       icon: BarChart3 },
+    { id:"area",      label:"Por área",      icon: Building2 },
+    { id:"cuenta",    label:"Por cuenta",    icon: BookOpen },
+    { id:"usuario",   label:"Por usuario",   icon: User },
+    { id:"antiguedad",label:"Antigüedad",    icon: Clock },
   ]
 
   if (loading) return <div style={{padding:40,textAlign:"center",color:"var(--text-3)"}}>Cargando reportes…</div>
@@ -294,7 +296,7 @@ export default function ReportesPage() {
               color:tab===t.id?"var(--accent)":"var(--text-2)",
               fontWeight:tab===t.id?700:500, whiteSpace:"nowrap",
             }}>
-            {t.icon} {t.label}
+            {(() => { const TabIcon = t.icon; return <TabIcon size={14} strokeWidth={1.75} style={{marginRight:4,verticalAlign:"middle"}}/> })()}{t.label}
           </button>
         ))}
       </div>
@@ -306,7 +308,7 @@ export default function ReportesPage() {
           {filtroMes !== "todos" && (
             <div className="card" style={{padding:"10px 14px",marginBottom:12,display:"flex",alignItems:"center",justifyContent:"space-between",gap:10,flexWrap:"wrap",background:"var(--accent-soft)",borderColor:"var(--accent)"}}>
               <div style={{fontSize:13,color:"var(--accent)",fontWeight:600}}>
-                📅 Filtrando por {MESES_LARGOS[parseInt(filtroMes)]} {anio}
+                <Calendar size={14} strokeWidth={2} style={{marginRight:6,verticalAlign:"middle"}}/>Filtrando por {MESES_LARGOS[parseInt(filtroMes)]} {anio}
               </div>
               <button className="btn sm ghost" onClick={()=>setFiltroMes("todos")}>
                 Ver todo el año
@@ -497,7 +499,7 @@ export default function ReportesPage() {
             <div className="card-title" style={{marginBottom:16}}>Ranking por cuenta contable</div>
             {porCuenta.length===0 ? (
               <div style={{padding:60,textAlign:"center",color:"var(--text-3)",fontSize:13}}>
-                <div style={{fontSize:32,marginBottom:12}}>📒</div>
+                <div style={{display:"flex",justifyContent:"center",marginBottom:12}}><FileX size={40} strokeWidth={1.5} style={{color:"var(--text-3, #888)"}}/></div>
                 Sin datos para este filtro.
                 <div style={{fontSize:11,marginTop:10}}>
                   {comprobantes.length === 0

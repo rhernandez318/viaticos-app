@@ -1,4 +1,6 @@
 "use client"
+import type { LucideIcon } from "lucide-react"
+import { Inbox, Clock, ShieldCheck, Banknote, FileText, Trophy, XCircle, RotateCcw, Paperclip } from "lucide-react"
 import { useState, useEffect, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
@@ -7,14 +9,14 @@ import { StatusBadge, TipoBadge } from "@/components/ui/StatusBadge"
 
 type Status = "solicitado"|"autorizado"|"validado"|"liberado"|"parcial"|"comprobado"|"rechazado"
 
-const STATUS_CONFIG: Record<Status,{label:string,icon:string,color:string,bg:string}> = {
-  solicitado:  { label:"Por aprobar",    icon:"📨", color:"var(--warn)",    bg:"var(--warn-soft)"    },
-  autorizado:  { label:"Pend. Admin",    icon:"🔐", color:"#c084fc",        bg:"rgba(192,132,252,.12)"},
-  validado:    { label:"Aut. Admin",     icon:"✅", color:"var(--accent)",  bg:"var(--accent-soft)"  },
-  liberado:    { label:"Liberados",      icon:"💵", color:"#60a5fa",        bg:"rgba(96,165,250,.12)"},
-  parcial:     { label:"Parcial",        icon:"📎", color:"#f97316",        bg:"rgba(249,115,22,.12)"},
-  comprobado:  { label:"Comprobados",    icon:"🏆", color:"var(--success)", bg:"var(--success-soft)" },
-  rechazado:   { label:"Rechazados",     icon:"❌", color:"var(--danger)",  bg:"var(--danger-soft)"  },
+const STATUS_CONFIG: Record<Status,{label:string,icon:LucideIcon,color:string,bg:string}> = {
+  solicitado:  { label:"Por aprobar",    icon: Inbox, color:"var(--warn)",    bg:"var(--warn-soft)"    },
+  autorizado:  { label:"Pend. Admin",    icon: Clock, color:"#c084fc",        bg:"rgba(192,132,252,.12)"},
+  validado:    { label:"Aut. Admin",     icon: ShieldCheck, color:"var(--accent)",  bg:"var(--accent-soft)"  },
+  liberado:    { label:"Liberados",      icon: Banknote, color:"#60a5fa",        bg:"rgba(96,165,250,.12)"},
+  parcial:     { label:"Parcial",        icon: FileText, color:"#f97316",        bg:"rgba(249,115,22,.12)"},
+  comprobado:  { label:"Comprobados",    icon: Trophy, color:"var(--success)", bg:"var(--success-soft)" },
+  rechazado:   { label:"Rechazados",     icon: XCircle, color:"var(--danger)",  bg:"var(--danger-soft)"  },
 }
 
 export default function DashboardPage() {
@@ -109,7 +111,7 @@ export default function DashboardPage() {
                     boxShadow:isActive?`0 0 0 3px ${cfg.color}22`:"none",
                   }}>
                   <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6}}>
-                    <span style={{fontSize:20}}>{cfg.icon}</span>
+                    <span style={{fontSize:20}}>{(() => { const StatusIcon = cfg.icon; return <StatusIcon size={20} strokeWidth={1.75}/> })()}</span>
                     <span style={{fontSize:24,fontWeight:800,color:cfg.color}}>
                       {items.length}
                     </span>
@@ -242,7 +244,7 @@ export default function DashboardPage() {
                             {s.status==="autorizado"&&(userRol==="admin")&&(
                               <button className="btn sm" style={{background:"#c084fc",border:"none",color:"#111",fontWeight:600}}
                                 onClick={()=>router.push("/admin/validar")}>
-                                🔐 Validar →
+                                <ShieldCheck size={14} strokeWidth={2} style={{marginRight:4,verticalAlign:"middle"}}/>Validar →
                               </button>
                             )}
                             {s.status==="validado"&&(userRol==="tesoreria"||userRol==="admin")&&(
@@ -253,14 +255,14 @@ export default function DashboardPage() {
                             {s.status==="liberado"&&s.tipo==="anticipo"&&(
                               <button className="btn sm primary"
                                 onClick={()=>router.push(`/solicitudes/comprobacion?anticipo=${s.id}`)}>
-                                📎 Comprobar →
+                                <Paperclip size={14} strokeWidth={2} style={{marginRight:4,verticalAlign:"middle"}}/>Comprobar →
                               </button>
                             )}
                             {s.status==="parcial"&&s.tipo==="anticipo"&&(
                               <button className="btn sm"
                                 style={{background:"var(--warn)",border:"none",color:"#111",fontWeight:600}}
                                 onClick={()=>router.push(`/solicitudes/comprobacion?anticipo=${s.id}`)}>
-                                📎 Comprobar saldo →
+                                <Paperclip size={14} strokeWidth={2} style={{marginRight:4,verticalAlign:"middle"}}/>Comprobar saldo →
                               </button>
                             )}
                           </div>

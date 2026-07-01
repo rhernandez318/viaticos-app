@@ -1,0 +1,3 @@
+module.exports=[90075,a=>{"use strict";a.s(["fmtFecha",0,a=>a?(a instanceof Date?a:new Date(a)).toLocaleDateString("es-MX",{day:"2-digit",month:"short",year:"numeric"}):"—","fmtMXN",0,a=>new Intl.NumberFormat("es-MX",{style:"currency",currency:"MXN",minimumFractionDigits:2}).format(a??0),"getBancosAccount",0,a=>"4105"===a?"1110100001":"4106"===a?"1110100002":"1110100001"])},8311,a=>{"use strict";let b=(0,a.i(64831).default)("clock",[["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}],["path",{d:"M12 6v6l4 2",key:"mmk7yg"}]]);a.s(["Clock",0,b],8311)},71195,a=>{"use strict";var b=a.i(87924),c=a.i(88767);a.s(["default",0,function(){return(0,b.jsx)(c.default,{})}])}];
+
+//# sourceMappingURL=_1dq5yjt._.js.map
