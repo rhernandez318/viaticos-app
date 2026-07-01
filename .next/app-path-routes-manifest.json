@@ -18,6 +18,7 @@
   "/(app)/gerente/equipo/page": "/gerente/equipo",
   "/(app)/gerente/page": "/gerente",
   "/(app)/gerente/reportes/page": "/gerente/reportes",
+  "/(app)/notificaciones/page": "/notificaciones",
   "/(app)/perfil/page": "/perfil",
   "/(app)/solicitudes/[id]/corregir/page": "/solicitudes/[id]/corregir",
   "/(app)/solicitudes/[id]/page": "/solicitudes/[id]",

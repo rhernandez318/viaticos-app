@@ -18,6 +18,7 @@
   "/(app)/gerente/equipo/page": "app/(app)/gerente/equipo/page.js",
   "/(app)/gerente/page": "app/(app)/gerente/page.js",
   "/(app)/gerente/reportes/page": "app/(app)/gerente/reportes/page.js",
+  "/(app)/notificaciones/page": "app/(app)/notificaciones/page.js",
   "/(app)/perfil/page": "app/(app)/perfil/page.js",
   "/(app)/solicitudes/[id]/corregir/page": "app/(app)/solicitudes/[id]/corregir/page.js",
   "/(app)/solicitudes/[id]/page": "app/(app)/solicitudes/[id]/page.js",

@@ -238,6 +238,12 @@
       "namedRegex": "^/login(?:/)?$"
     },
     {
+      "page": "/notificaciones",
+      "regex": "^/notificaciones(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/notificaciones(?:/)?$"
+    },
+    {
       "page": "/perfil",
       "regex": "^/perfil(?:/)?$",
       "routeKeys": {},
