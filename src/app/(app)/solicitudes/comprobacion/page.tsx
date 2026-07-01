@@ -233,7 +233,7 @@ function NuevaComprobacionInner() {
                         }}
                       />
                       {isComidas(it.cuenta, catalogoGastos) && !(it as any).observaciones && (
-                        <div style={{fontSize:10,color:"var(--danger)",marginTop:2}}><AlertTriangle size={12} strokeWidth={2} style={{verticalAlign:"middle",marginRight:3}}/>Favor de indicar número y nombre de los comensales
+                        <div style={{fontSize:10,color:"var(--danger)",marginTop:2}}><AlertTriangle size={12} strokeWidth={2} color="currentColor" style={{verticalAlign:"middle",marginRight:3,display:"inline"}}/>Favor de indicar número y nombre de los comensales
                         </div>
                       )}
                     </div>

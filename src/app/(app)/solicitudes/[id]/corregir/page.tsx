@@ -171,7 +171,7 @@ export default function CorregirComprobacionPage() {
                     style={{fontSize:11,padding:"5px 6px",
                       borderColor:isComidas(it.cuenta, catalogoGastos)&&!it.observaciones?"var(--danger)":"var(--border)"}}/>
                   {isComidas(it.cuenta, catalogoGastos)&&!it.observaciones&&(
-                    <div style={{fontSize:10,color:"var(--danger)",marginTop:2}}><AlertTriangle size={12} strokeWidth={2} style={{verticalAlign:"middle",marginRight:3}}/>Favor de indicar número y nombre de los comensales
+                    <div style={{fontSize:10,color:"var(--danger)",marginTop:2}}><AlertTriangle size={12} strokeWidth={2} color="currentColor" style={{verticalAlign:"middle",marginRight:3,display:"inline"}}/>Favor de indicar número y nombre de los comensales
                     </div>
                   )}
                 </td>

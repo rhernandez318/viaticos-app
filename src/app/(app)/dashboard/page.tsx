@@ -111,7 +111,7 @@ export default function DashboardPage() {
                     boxShadow:isActive?`0 0 0 3px ${cfg.color}22`:"none",
                   }}>
                   <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6}}>
-                    <span style={{fontSize:20}}>{(() => { const StatusIcon = cfg.icon; return <StatusIcon size={20} strokeWidth={1.75}/> })()}</span>
+                    <span style={{fontSize:20}}>{(() => { const StatusIcon = cfg.icon; return <StatusIcon size={20} strokeWidth={1.75} color={cfg.color}/> })()}</span>
                     <span style={{fontSize:24,fontWeight:800,color:cfg.color}}>
                       {items.length}
                     </span>
@@ -152,7 +152,7 @@ export default function DashboardPage() {
             <div>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
                 <div style={{fontWeight:700,fontSize:15,color:STATUS_CONFIG[activeStatus].color}}>
-                  {(() => { const StIcon = STATUS_CONFIG[activeStatus].icon; return <StIcon size={16} strokeWidth={1.75} style={{verticalAlign:"middle"}}/> })()} {STATUS_CONFIG[activeStatus].label}
+                  {(() => { const StIcon = STATUS_CONFIG[activeStatus].icon; return <StIcon size={16} strokeWidth={1.75} color={STATUS_CONFIG[activeStatus].color} style={{verticalAlign:"middle"}}/> })()} {STATUS_CONFIG[activeStatus].label}
                   <span style={{fontWeight:400,color:"var(--text-3)",marginLeft:8,fontSize:13}}>
                     · {drillItems.length} solicitudes · {fmtMXN(drillItems.reduce((a,s)=>a+parseFloat(s.monto||0),0))}
                   </span>
@@ -244,7 +244,7 @@ export default function DashboardPage() {
                             {s.status==="autorizado"&&(userRol==="admin")&&(
                               <button className="btn sm" style={{background:"#c084fc",border:"none",color:"#111",fontWeight:600}}
                                 onClick={()=>router.push("/admin/validar")}>
-                                <ShieldCheck size={14} strokeWidth={2} style={{marginRight:4,verticalAlign:"middle"}}/>Validar →
+                                <ShieldCheck size={14} strokeWidth={2} color="#111" style={{marginRight:4,verticalAlign:"middle"}}/>Validar →
                               </button>
                             )}
                             {s.status==="validado"&&(userRol==="tesoreria"||userRol==="admin")&&(

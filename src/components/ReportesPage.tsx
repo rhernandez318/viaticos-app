@@ -308,7 +308,7 @@ export default function ReportesPage() {
           {filtroMes !== "todos" && (
             <div className="card" style={{padding:"10px 14px",marginBottom:12,display:"flex",alignItems:"center",justifyContent:"space-between",gap:10,flexWrap:"wrap",background:"var(--accent-soft)",borderColor:"var(--accent)"}}>
               <div style={{fontSize:13,color:"var(--accent)",fontWeight:600}}>
-                <Calendar size={14} strokeWidth={2} style={{marginRight:6,verticalAlign:"middle"}}/>Filtrando por {MESES_LARGOS[parseInt(filtroMes)]} {anio}
+                <Calendar size={14} strokeWidth={2} color="var(--accent, #c5f24d)" style={{marginRight:6,verticalAlign:"middle"}}/>Filtrando por {MESES_LARGOS[parseInt(filtroMes)]} {anio}
               </div>
               <button className="btn sm ghost" onClick={()=>setFiltroMes("todos")}>
                 Ver todo el año
