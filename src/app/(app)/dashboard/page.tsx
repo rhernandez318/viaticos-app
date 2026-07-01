@@ -152,7 +152,7 @@ export default function DashboardPage() {
             <div>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
                 <div style={{fontWeight:700,fontSize:15,color:STATUS_CONFIG[activeStatus].color}}>
-                  {STATUS_CONFIG[activeStatus].icon} {STATUS_CONFIG[activeStatus].label}
+                  {(() => { const StIcon = STATUS_CONFIG[activeStatus].icon; return <StIcon size={16} strokeWidth={1.75} style={{verticalAlign:"middle"}}/> })()} {STATUS_CONFIG[activeStatus].label}
                   <span style={{fontWeight:400,color:"var(--text-3)",marginLeft:8,fontSize:13}}>
                     · {drillItems.length} solicitudes · {fmtMXN(drillItems.reduce((a,s)=>a+parseFloat(s.monto||0),0))}
                   </span>
