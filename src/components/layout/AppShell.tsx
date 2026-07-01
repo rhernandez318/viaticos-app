@@ -115,8 +115,13 @@ export function AppShell({ user, children }: Props) {
   const [showColorPicker, setShowColorPicker] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
 
-  const isActive = (href: string) =>
-    href === "/dashboard" ? pathname === "/dashboard" : pathname.startsWith(href)
+  const isActive = (href: string) => {
+    // Rutas que requieren match exacto (rutas "índice" con hijos)
+    const exactMatch = ["/dashboard", "/solicitudes", "/solicitudes/todas", "/gerente", "/perfil", "/notificaciones"]
+    if (exactMatch.includes(href)) return pathname === href
+    // El resto: match exacto o si es un prefix seguido de "/"
+    return pathname === href || pathname.startsWith(href + "/")
+  }
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768)
