@@ -217,7 +217,7 @@ export function AppShell({ user, children }: Props) {
       {/* SIDEBAR DESKTOP */}
       <aside style={sidebarStyle} className="sidebar">
         <div style={{ display:"flex", alignItems:"center", gap:10, padding:"4px 8px 12px" }}>
-          <Image src="/logo.png" alt="Logo" width={36} height={36} style={{ borderRadius:8 }}/>
+          <Image src="/logo.svg" alt="Logo" width={36} height={36} style={{ borderRadius:8 }}/>
           <div>
             <div style={{ fontSize:12, fontWeight:700 }}>Grupo Zapata</div>
             <div style={{ fontSize:10, color:"var(--text-3, #888)" }}>Viáticos</div>
@@ -367,7 +367,7 @@ export function AppShell({ user, children }: Props) {
       {/* TOP BAR MOBILE */}
       <div style={mobileTopbarStyle}>
         <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-          <Image src="/logo.png" alt="Logo" width={28} height={28} style={{ borderRadius:6 }}/>
+          <Image src="/logo.svg" alt="Logo" width={28} height={28} style={{ borderRadius:6 }}/>
           <span style={{ fontSize:14, fontWeight:600 }}>Viáticos</span>
         </div>
         <div style={{ display:"flex", gap:6 }}>
