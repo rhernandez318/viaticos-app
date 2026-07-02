@@ -1,4 +1,5 @@
 "use client"
+import { Download } from "lucide-react"
 import { useState, useEffect } from "react"
 import Image from "next/image"
 
@@ -88,7 +89,7 @@ export function InstallBanner() {
           <div style={{ width:60, height:60, borderRadius:16, overflow:"hidden",
             background:"white", padding:4, flexShrink:0,
             boxShadow:"0 4px 16px rgba(0,0,0,.2)" }}>
-            <Image src="/logo.png" alt="Viáticos GZ" width={52} height={52}
+            <Image src="/logo.svg" alt="Viáticos GZ" width={52} height={52}
               style={{ width:"100%", height:"100%", objectFit:"contain" }}/>
           </div>
           <div>
@@ -110,9 +111,7 @@ export function InstallBanner() {
             background:"var(--accent)", border:"none", color:"#111",
             fontSize:16, fontWeight:700, cursor:"pointer",
             display:"flex", alignItems:"center", justifyContent:"center", gap:10,
-          }}>
-          ⬇️ Instalar aplicación
-        </button>
+          }}><Download size={16} strokeWidth={2} style={{marginRight:6,verticalAlign:"middle"}}/>Instalar aplicación</button>
         <div style={{ textAlign:"center", fontSize:12, color:"var(--text-3)", marginTop:10 }}>
           Sin ocupar espacio adicional · Funciona sin conexión
         </div>

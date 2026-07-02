@@ -1,4 +1,5 @@
 "use client"
+import { Download } from "lucide-react"
 import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
@@ -25,7 +26,7 @@ function InstallButton() {
       border:"1px solid var(--border)", background:"var(--surface-2)",
       color:"var(--text-2)", fontSize:13, fontWeight:500, cursor:"pointer",
       display:"flex", alignItems:"center", justifyContent:"center", gap:8,
-    }}>⬇️ Instalar aplicación</button>
+    }}><Download size={16} strokeWidth={2} style={{marginRight:6,verticalAlign:"middle"}}/>Instalar aplicación</button>
   )
 }
 
