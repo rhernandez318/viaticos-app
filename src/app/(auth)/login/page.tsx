@@ -66,7 +66,7 @@ export default function LoginPage() {
         <div style={{ textAlign:"center", marginBottom:28 }}>
           <div style={{ width:80, height:80, margin:"0 auto 14px", borderRadius:20,
             overflow:"hidden", background:"white", padding:4, boxShadow:"0 8px 32px rgba(0,0,0,.2)" }}>
-            <Image src="/logo.png" alt="Grupo Zapata" width={72} height={72}
+            <Image src="/logo.svg" alt="Grupo Zapata" width={72} height={72}
               style={{ width:"100%", height:"100%", objectFit:"contain" }}/>
           </div>
           <div style={{ fontSize:24, fontWeight:800, letterSpacing:"-0.03em", marginBottom:4 }}>
