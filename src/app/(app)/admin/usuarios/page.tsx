@@ -22,6 +22,27 @@ const ROL_COLOR: Record<string,string> = {
   admin:"var(--accent)",gerente:"var(--success)",tesoreria:"#60a5fa",contador:"#c084fc",usuario:"var(--text-3)"
 }
 
+
+const FormField = ({ label, children }: { label: string; children: React.ReactNode }) => (
+  <div>
+    <label style={{fontSize:11,color:"var(--text-3)",display:"block",marginBottom:4}}>{label}</label>
+    {children}
+  </div>
+)
+
+const Modal = ({ title, onClose, onSave, children }: any) => (
+  <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.6)",zIndex:100,display:"grid",placeItems:"center",padding:20}}>
+    <div className="card" style={{width:"100%",maxWidth:520,maxHeight:"90vh",overflowY:"auto"}}>
+      <div style={{fontWeight:700,fontSize:16,marginBottom:16}}>{title}</div>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>{children}</div>
+      <div style={{display:"flex",gap:8,justifyContent:"flex-end",marginTop:16}}>
+        <button className="btn ghost" onClick={onClose}>Cancelar</button>
+        <button className="btn primary" onClick={onSave} disabled={guardando}>{guardando?"Guardando…":"Guardar"}</button>
+      </div>
+    </div>
+  </div>
+)
+
 export default function AdminUsuariosPage() {
   const [usuarios, setUsuarios] = useState<any[]>([])
   const [centros, setCentros] = useState<any[]>([])
@@ -100,25 +121,7 @@ export default function AdminUsuariosPage() {
     u.correo?.toLowerCase().includes(busqueda.toLowerCase()) ||
     u.rol?.toLowerCase().includes(busqueda.toLowerCase()))
 
-  const FormField = ({ label, children }: { label: string; children: React.ReactNode }) => (
-    <div>
-      <label style={{fontSize:11,color:"var(--text-3)",display:"block",marginBottom:4}}>{label}</label>
-      {children}
-    </div>
-  )
 
-  const Modal = ({ title, onClose, onSave, children }: any) => (
-    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.6)",zIndex:100,display:"grid",placeItems:"center",padding:20}}>
-      <div className="card" style={{width:"100%",maxWidth:520,maxHeight:"90vh",overflowY:"auto"}}>
-        <div style={{fontWeight:700,fontSize:16,marginBottom:16}}>{title}</div>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>{children}</div>
-        <div style={{display:"flex",gap:8,justifyContent:"flex-end",marginTop:16}}>
-          <button className="btn ghost" onClick={onClose}>Cancelar</button>
-          <button className="btn primary" onClick={onSave} disabled={guardando}>{guardando?"Guardando…":"Guardar"}</button>
-        </div>
-      </div>
-    </div>
-  )
 
   return (
     <>
