@@ -30,7 +30,7 @@ const FormField = ({ label, children }: { label: string; children: React.ReactNo
   </div>
 )
 
-const Modal = ({ title, onClose, onSave, children }: any) => (
+const Modal = ({ title, onClose, onSave, guardando, children }: any) => (
   <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.6)",zIndex:100,display:"grid",placeItems:"center",padding:20}}>
     <div className="card" style={{width:"100%",maxWidth:520,maxHeight:"90vh",overflowY:"auto"}}>
       <div style={{fontWeight:700,fontSize:16,marginBottom:16}}>{title}</div>
@@ -136,7 +136,7 @@ export default function AdminUsuariosPage() {
 
       {/* Modal nuevo usuario */}
       {creando && (
-        <Modal title="Nuevo usuario" onClose={()=>setCreando(false)} onSave={crearUsuario}>
+        <Modal title="Nuevo usuario" onClose={()=>setCreando(false)} onSave={crearUsuario} guardando={guardando}>
           <FormField label="Nombre completo">
             <input className="input" value={nuevoForm.nombre} onChange={e=>setNuevoForm({...nuevoForm,nombre:e.target.value})}/>
           </FormField>
