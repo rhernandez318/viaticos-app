@@ -11,6 +11,7 @@ import {
   BookOpen, Gauge, Settings, FileSpreadsheet, BarChart3, UserCircle,
   CircleCheckBig, Flag, UsersRound, Search, GitCompare, Bell, LogOut,
   Menu as MenuIcon, Palette, Moon, Sun,
+  Layers,
 } from "lucide-react"
 
 interface NavItem  { id: string; label: string; icon: LucideIcon; href: string }
