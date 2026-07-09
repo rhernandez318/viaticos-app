@@ -3,7 +3,6 @@ import { useState, useEffect, useCallback } from "react"
 import { createClient } from "@/lib/supabase/client"
 
 const ROLES = ["usuario","gerente","tesoreria","contador","admin"]
-const DIVISIONES = ["4105","4106","4111","4113"]
 const WORKER_URL = process.env.NEXT_PUBLIC_WORKER_URL || ""
 const WORKER_SECRET = "viaticos-zapata-push-2026"
 
@@ -46,6 +45,7 @@ const Modal = ({ title, onClose, onSave, guardando, children }: any) => (
 export default function AdminUsuariosPage() {
   const [usuarios, setUsuarios] = useState<any[]>([])
   const [centros, setCentros] = useState<any[]>([])
+  const [divisiones, setDivisiones] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [editando, setEditando] = useState<any|null>(null)
   const [creando, setCreando] = useState(false)
@@ -62,7 +62,7 @@ export default function AdminUsuariosPage() {
       sb.from("usuarios").select("*").eq("activo",true).order("nombre"),
       sb.from("centros").select("id,nombre").eq("activo",true).order("nombre"),
     ])
-    setUsuarios(u.data||[]); setCentros(c.data||[]); setLoading(false)
+    setUsuarios(u.data||[]); setCentros(c.data||[]); const { data: dataD } = await sb.from("divisiones").select("*").eq("activo", true).order("codigo"); setDivisiones(dataD || []); setLoading(false)
   },[])
   useEffect(()=>{ load() },[load])
 
@@ -153,7 +153,7 @@ export default function AdminUsuariosPage() {
           </FormField>
           <FormField label="División SAP">
             <select className="select" value={nuevoForm.division} onChange={e=>setNuevoForm({...nuevoForm,division:e.target.value})}>
-              {DIVISIONES.map(d=><option key={d}>{d}</option>)}
+              {divisiones.map((d:any)=><option key={d.codigo} value={d.codigo}>{d.codigo} · {d.nombre}</option>)}
             </select>
           </FormField>
           <FormField label="Centro de beneficio *">
@@ -187,7 +187,7 @@ export default function AdminUsuariosPage() {
           </FormField>
           <FormField label="División">
             <select className="select" value={editando.division||"4105"} onChange={e=>setEditando({...editando,division:e.target.value})}>
-              {DIVISIONES.map(d=><option key={d}>{d}</option>)}
+              {divisiones.map((d:any)=><option key={d.codigo} value={d.codigo}>{d.codigo} · {d.nombre}</option>)}
             </select>
           </FormField>
           <FormField label="Centro">

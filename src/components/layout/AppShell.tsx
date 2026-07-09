@@ -87,6 +87,7 @@ const NAV_BY_ROL: Record<string, NavGroup[]> = {
     { label:"Gestión", items: [
       { id:"usuarios", label:"Usuarios",         icon: Users,           href:"/admin/usuarios" },
       { id:"centros",  label:"Centros",          icon: Building2,       href:"/admin/centros" },
+      { id:"divisiones", label:"Divisiones SAP",  icon: Layers,          href:"/admin/divisiones" },
       { id:"catalogo", label:"Catálogo",         icon: BookOpen,        href:"/admin/catalogo" },
       { id:"limites",  label:"Límites de gasto", icon: Gauge,           href:"/admin/limites" },
       { id:"ajustes",  label:"Ajustes sistema",  icon: Settings,        href:"/admin/ajustes" },
